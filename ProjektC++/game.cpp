@@ -1,6 +1,7 @@
 #include "game.h"
 #include "player.h"
 
+
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(600), screenWidth(1024), gameState(GameState::PLAY) {
 }
@@ -32,18 +33,16 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     }
 }
 
+
 void Game::gameLoop() {
+    
+    Player player(renderer, 0, 0, 100, 100);
+
     while (gameState != GameState::EXIT) {
-        
         handleEvents();
-
-        Player player(renderer, 0, 0, 100, 100);
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
+        
         player.render();
-
+        
         SDL_RenderPresent(renderer);
     }
 }
@@ -55,6 +54,13 @@ void Game::handleEvents() {
     switch (event.type) {
     case SDL_QUIT:
         gameState = GameState::EXIT;
+        break;
+    case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+        case SDLK_ESCAPE:
+            gameState = GameState::EXIT;
+            break;
+        }
         break;
     }
 }

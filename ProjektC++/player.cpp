@@ -1,8 +1,8 @@
 #include "player.h"
+#include <iostream>
 
 Player::Player(SDL_Renderer* renderer, int x, int y, int w, int h)
     : renderer(renderer) {
-    
     rect.x = x;
     rect.y = y;
     rect.w = w;
@@ -14,7 +14,6 @@ Player::~Player() {
 }
 
 void Player::render() {
-    
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
     int screenWidth, screenHeight;
