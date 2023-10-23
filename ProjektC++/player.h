@@ -2,12 +2,14 @@
 
 #include <SDL.h>
 
-class Player {
+class Player {  
 public:
-    Player(SDL_Renderer* renderer, int x, int y, int w, int h);
+    Player(SDL_Renderer* renderer, double x, double y, int w, int h);
     ~Player();
 
-    void render();
+    void spawnPlayer();
+    void updatePlayerPosition();
+    void clearPlayer(SDL_Renderer* renderer);
 
 private:
     SDL_Renderer* renderer;

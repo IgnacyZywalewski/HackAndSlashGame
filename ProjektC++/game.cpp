@@ -3,7 +3,7 @@
 
 
 Game::Game()
-    : window(nullptr), renderer(nullptr), screenHeight(600), screenWidth(1024), gameState(GameState::PLAY) {
+    : window(nullptr), renderer(nullptr), screenHeight(600.0), screenWidth(1024.0), gameState(GameState::PLAY) {
 }
 
 Game::~Game() {
@@ -35,17 +35,21 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 
 
 void Game::gameLoop() {
-    
-    Player player(renderer, 0, 0, 100, 100);
+    Player player(renderer, screenWidth / 2, screenHeight / 2, 50, 50);
 
     while (gameState != GameState::EXIT) {
         handleEvents();
-        
-        player.render();
-        
+
+        player.clearPlayer(renderer);
+
+        player.updatePlayerPosition();
+
+        player.spawnPlayer();
+
         SDL_RenderPresent(renderer);
     }
 }
+
 
 void Game::handleEvents() {
     SDL_Event event;
