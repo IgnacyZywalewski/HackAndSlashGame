@@ -3,7 +3,7 @@
 
 
 Game::Game()
-    : window(nullptr), renderer(nullptr), screenHeight(600.0), screenWidth(1024.0), gameState(GameState::PLAY) {
+    : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
 }
 
 Game::~Game() {
