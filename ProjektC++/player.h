@@ -8,10 +8,11 @@ public:
     ~Player();
 
     void spawnPlayer();
-    void updatePlayerPosition();
+    void updatePlayerPosition(int screenWidth, int screenHeight);
     void clearPlayer(SDL_Renderer* renderer);
+
+    SDL_Rect rect;
 
 private:
     SDL_Renderer* renderer;
-    SDL_Rect rect;
 };

@@ -1,4 +1,5 @@
 #include "player.h"
+#include <iostream>
 
 Player::Player(SDL_Renderer* renderer, double x, double y, int w, int h)
     : renderer(renderer) {
@@ -27,25 +28,32 @@ void Player::spawnPlayer() {
     SDL_RenderFillRect(renderer, &playerRect);
 }
 
-void Player::updatePlayerPosition() {
+void Player::updatePlayerPosition(int screenWidth, int screenHeight) {
     const Uint8* keystates = SDL_GetKeyboardState(nullptr);
 
+    float newX = rect.x;
+    float newY = rect.y;
+
     if (keystates[SDL_SCANCODE_UP]) {
-        rect.y -= 1.0;  // Przesuniêcie w górê
+        newY -= 1;  // Przesuniêcie w górê
     }
     if (keystates[SDL_SCANCODE_DOWN]) {
-        rect.y += 1.0;  // Przesuniêcie w dó³
+        newY += 1;  // Przesuniêcie w dó³
     }
     if (keystates[SDL_SCANCODE_LEFT]) {
-        rect.x -= 1.0;  // Przesuniêcie w lewo
+        newX -= 1;  // Przesuniêcie w lewo
     }
     if (keystates[SDL_SCANCODE_RIGHT]) {
-        rect.x += 1.0;  // Przesuniêcie w prawo
+        newX += 1;  // Przesuniêcie w prawo
     }
+
+    rect.x = std::max(0.0f, std::min(newX, static_cast<float>(screenWidth - rect.w)));
+    rect.y = std::max(0.0f, std::min(newY, static_cast<float>(screenHeight - rect.h)));
 }
 
+
 void Player::clearPlayer(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);  // Kolor t³a (np. czarny)
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderFillRect(renderer, &rect);
 }
 
