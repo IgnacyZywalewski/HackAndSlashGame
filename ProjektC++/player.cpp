@@ -35,16 +35,16 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight) {
     float newY = rect.y;
 
     if (keystates[SDL_SCANCODE_UP]) {
-        newY -= 1;  // Przesuniêcie w górê
+        newY -= 3;  // Przesuniêcie w górê
     }
     if (keystates[SDL_SCANCODE_DOWN]) {
-        newY += 1;  // Przesuniêcie w dó³
+        newY += 3;  // Przesuniêcie w dó³
     }
     if (keystates[SDL_SCANCODE_LEFT]) {
-        newX -= 1;  // Przesuniêcie w lewo
+        newX -= 3;  // Przesuniêcie w lewo
     }
     if (keystates[SDL_SCANCODE_RIGHT]) {
-        newX += 1;  // Przesuniêcie w prawo
+        newX += 3;  // Przesuniêcie w prawo
     }
 
     rect.x = std::max(0.0f, std::min(newX, static_cast<float>(screenWidth - rect.w)));

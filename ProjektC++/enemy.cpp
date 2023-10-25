@@ -4,7 +4,7 @@
 #include <SDL.h>
 
 
-Enemy::Enemy(SDL_Renderer* renderer, int x, int y, int w, int h, float moveSpeed) {
+Enemy::Enemy(SDL_Renderer* renderer, float x, float y, int w, int h, float moveSpeed) {
     this->renderer = renderer;
 
     rect.x = x;
@@ -25,16 +25,16 @@ void Enemy::draw() {
 void Enemy::updateEnemyPosition(float playerX, float playerY) {
     float dx = playerX - rect.x;
     float dy = playerY - rect.y;
+
     float length = sqrt(dx * dx + dy * dy);
+ 
+    dx /= length;
+    dy /= length;
 
-    if (length > 1.0) {
-        dx /= length;
-        dy /= length;
+    rect.x += dx * speed;
+    rect.y += dy * speed;
+}
 
-        rect.x += dx * speed;
-        rect.y += dy * speed;
-    }
-};
 
 void Enemy::clearEnemy(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

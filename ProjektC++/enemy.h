@@ -3,9 +3,10 @@
 #include <SDL.h>
 #include <vector>
 
+
 class Enemy {
 public:
-    Enemy(SDL_Renderer* renderer, int x, int y, int w, int h, float moveSpeed);
+    Enemy(SDL_Renderer* renderer, float x, float y, int w, int h, float moveSpeed);
     ~Enemy();
 
     void updateEnemyPosition(float playerX, float playerY);

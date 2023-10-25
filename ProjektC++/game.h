@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <SDL.h>
+#include <chrono>
 
 enum class GameState { PLAY, EXIT };
 
@@ -11,6 +12,7 @@ public:
     ~Game();
 
     void run();
+
 
 private:
     void init(const char* title, int x, int y, int w, int h, Uint32 flags);
