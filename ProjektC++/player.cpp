@@ -1,5 +1,6 @@
-#include "player.h"
 #include <iostream>
+
+#include "player.h"
 
 Player::Player(SDL_Renderer* renderer, double x, double y, int w, int h)
     : renderer(renderer) {
@@ -9,9 +10,7 @@ Player::Player(SDL_Renderer* renderer, double x, double y, int w, int h)
     rect.h = h;
 }
 
-Player::~Player() {
-    
-}
+Player::~Player() {}
 
 void Player::spawnPlayer() {
     int centerX = rect.x + rect.w / 2;
@@ -56,4 +55,3 @@ void Player::clearPlayer(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderFillRect(renderer, &rect);
 }
-

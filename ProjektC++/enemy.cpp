@@ -1,8 +1,7 @@
-#include "enemy.h"
-
 #include <vector>
 #include <SDL.h>
 
+#include "enemy.h"
 
 Enemy::Enemy(SDL_Renderer* renderer, float x, float y, int w, int h, float moveSpeed) {
     this->renderer = renderer;
@@ -15,7 +14,7 @@ Enemy::Enemy(SDL_Renderer* renderer, float x, float y, int w, int h, float moveS
     this->speed = moveSpeed;
 }
 
-Enemy::~Enemy() {};
+Enemy::~Enemy() {}
 
 void Enemy::draw() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);

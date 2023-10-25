@@ -1,9 +1,8 @@
+#include <windows.h>
+
 #include "game.h"
 #include "player.h"
 #include "enemy.h"
-
-#include <windows.h>
-
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
