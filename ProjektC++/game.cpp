@@ -75,8 +75,8 @@ void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
     }
 }
 
-/*
-bool checkPlayerEnemyCollision(const SDL_Rect& playerRect, const SDL_Rect& enemyRect) {
+
+bool checkPlayerEnemyCollision(const RectPlayer& playerRect, const RectEnemy& enemyRect) {
     if (playerRect.x + playerRect.w <= enemyRect.x || playerRect.x >= enemyRect.x + enemyRect.w ||
         playerRect.y + playerRect.h <= enemyRect.y || playerRect.y >= enemyRect.y + enemyRect.h) {
         // Brak kolizji miêdzy graczem a tym wrogiem
@@ -85,16 +85,16 @@ bool checkPlayerEnemyCollision(const SDL_Rect& playerRect, const SDL_Rect& enemy
         return true;
     }
     return false;
-}*/
+}
 
-/*
-void handleCollisions(std::vector<Enemy>& enemies, SDL_Rect playerRect) {
+void handleCollisions(std::vector<Enemy>& enemies, RectPlayer playerRect) {
     for (int i = enemies.size() - 1; i >= 0; i--) {
         if (checkPlayerEnemyCollision(playerRect, enemies[i].rect)) {
             enemies.erase(enemies.begin() + i); // Usuñ wroga po kolizji
         }
     }
-}*/
+}
+
 
 
 void Game::gameLoop() {
@@ -115,7 +115,7 @@ void Game::gameLoop() {
         generateEnemies(enemies, renderer, screenWidth, screenHeight);
         updateEnemies(enemies, player.rect.x, player.rect.y);
         drawEnemies(enemies);
-        //handleCollisions(enemies, player.rect);
+        handleCollisions(enemies, player.rect);
 
         SDL_RenderPresent(renderer);
     }

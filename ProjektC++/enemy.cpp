@@ -18,7 +18,8 @@ Enemy::~Enemy() {}
 
 void Enemy::draw() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_Rect sdlRect = { static_cast<int>(rect.x), static_cast<int>(rect.y), rect.w, rect.h };
+    SDL_RenderFillRect(renderer, &sdlRect);
 }
 
 void Enemy::updateEnemyPosition(float playerX, float playerY) {
@@ -26,7 +27,7 @@ void Enemy::updateEnemyPosition(float playerX, float playerY) {
     float dy = playerY - rect.y;
 
     float length = sqrt(dx * dx + dy * dy);
- 
+
     dx /= length;
     dy /= length;
 
@@ -34,8 +35,8 @@ void Enemy::updateEnemyPosition(float playerX, float playerY) {
     rect.y += dy * speed;
 }
 
-
 void Enemy::clearEnemy(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_Rect sdlRect = { static_cast<int>(rect.x), static_cast<int>(rect.y), rect.w, rect.h };
+    SDL_RenderFillRect(renderer, &sdlRect);
 }

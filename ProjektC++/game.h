@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <SDL.h>
-#include <chrono>
 
 enum class GameState { PLAY, EXIT };
 

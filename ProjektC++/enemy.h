@@ -3,6 +3,13 @@
 #include <SDL.h>
 #include <vector>
 
+struct RectEnemy {
+    float x;
+    float y;
+    float w;
+    float h;
+};
+
 
 class Enemy {
 public:
@@ -13,7 +20,7 @@ public:
     void draw();
     void clearEnemy(SDL_Renderer* renderer);
 
-    SDL_Rect rect;
+    RectEnemy rect;
     
 private:
     SDL_Renderer* renderer;
