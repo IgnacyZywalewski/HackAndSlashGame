@@ -1,4 +1,3 @@
-#include <vector>
 #include <SDL.h>
 
 #include "enemy.h"

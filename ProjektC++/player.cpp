@@ -45,7 +45,6 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight) {
         newX += 3.0;  // Przesuniêcie w prawo
     }
 
-    // Tu stosujemy now¹ strukturê Rect
     rect.x = std::max(0.0, std::min(newX, static_cast<double>(screenWidth) - rect.w));
     rect.y = std::max(0.0, std::min(newY, static_cast<double>(screenHeight) - rect.h));
 }

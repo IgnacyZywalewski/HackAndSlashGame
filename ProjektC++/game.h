@@ -12,7 +12,6 @@ public:
 
     void run();
 
-
 private:
     void init(const char* title, int x, int y, int w, int h, Uint32 flags);
     void gameLoop();

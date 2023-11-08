@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <vector>
 
 #include "game.h"
 #include "player.h"
@@ -75,11 +76,9 @@ void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
     }
 }
 
-
 bool checkPlayerEnemyCollision(const RectPlayer& playerRect, const RectEnemy& enemyRect) {
     if (playerRect.x + playerRect.w <= enemyRect.x || playerRect.x >= enemyRect.x + enemyRect.w ||
         playerRect.y + playerRect.h <= enemyRect.y || playerRect.y >= enemyRect.y + enemyRect.h) {
-        // Brak kolizji miêdzy graczem a tym wrogiem
     }
     else {
         return true;
@@ -90,12 +89,10 @@ bool checkPlayerEnemyCollision(const RectPlayer& playerRect, const RectEnemy& en
 void handleCollisions(std::vector<Enemy>& enemies, RectPlayer playerRect) {
     for (int i = enemies.size() - 1; i >= 0; i--) {
         if (checkPlayerEnemyCollision(playerRect, enemies[i].rect)) {
-            enemies.erase(enemies.begin() + i); // Usuñ wroga po kolizji
+            enemies.erase(enemies.begin() + i);
         }
     }
 }
-
-
 
 void Game::gameLoop() {
     Player player(renderer, screenWidth / 2 - 25, screenHeight / 2 - 25, 50, 50);
@@ -108,6 +105,7 @@ void Game::gameLoop() {
         player.clearPlayer(renderer);
         player.updatePlayerPosition(screenWidth, screenHeight);
         player.spawnPlayer();
+
 
         for (Enemy& enemy : enemies) {
             enemy.clearEnemy(renderer);
