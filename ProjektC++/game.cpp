@@ -1,9 +1,16 @@
 #include <windows.h>
 #include <vector>
+#include <SDL_image.h>
 
 #include "game.h"
 #include "player.h"
 #include "enemy.h"
+
+float playerWidth = 50;
+float playerHeight = 50;
+float playerSpeed = 3.0;
+
+SDL_Texture* playerTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
@@ -27,12 +34,22 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
     if (!window) {
-        std::cerr << "Nie uda³o siê utworzyæ okna: " << SDL_GetError() << "\n";
+        std::cerr << "Nie udalo sie utworzyc okna: " << SDL_GetError() << "\n";
     }
 
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (!renderer) {
-        std::cerr << "Nie uda³o siê utworzyæ renderera: " << SDL_GetError() << "\n";
+        std::cerr << "Nie udalo sie utworzyc renderera: " << SDL_GetError() << "\n";
+    }
+
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags)) {
+        std::cerr << "Nie mozna zainicjowaæ SDL_Image: " << IMG_GetError() << "\n";
+    }
+
+    playerTexture = IMG_LoadTexture(renderer, "assets/player.png");
+    if (!playerTexture) {
+        std::cerr << "Nie mozna zaladowac tekstury gracza: " << IMG_GetError() << "\n";
     }
 }
 
@@ -75,7 +92,7 @@ void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
         enemy.updateEnemyPosition(playerX, playerY);
     }
 }
-
+/*
 bool checkPlayerEnemyCollision(const RectPlayer& playerRect, const RectEnemy& enemyRect) {
     if (playerRect.x + playerRect.w <= enemyRect.x || playerRect.x >= enemyRect.x + enemyRect.w ||
         playerRect.y + playerRect.h <= enemyRect.y || playerRect.y >= enemyRect.y + enemyRect.h) {
@@ -92,19 +109,34 @@ void handleCollisions(std::vector<Enemy>& enemies, RectPlayer playerRect) {
             enemies.erase(enemies.begin() + i);
         }
     }
-}
+}*/
 
 void Game::gameLoop() {
-    Player player(renderer, screenWidth / 2 - 25, screenHeight / 2 - 25, 50, 50);
+    Player player(renderer, screenWidth/2 - (playerWidth/2), screenHeight/2 - (playerHeight/2), playerWidth, playerHeight);
     std::vector<Enemy> enemies;
 
     while (gameState != GameState::EXIT) {
         handleEvents();
         Sleep(10);
 
-        player.clearPlayer(renderer);
-        player.updatePlayerPosition(screenWidth, screenHeight);
+
+        player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
+
+        SDL_RendererFlip flip = SDL_FLIP_NONE; //obrót gracza
+        if (player.facingDirection == Direction::LEFT) {
+            flip = SDL_FLIP_HORIZONTAL;
+        }
+
         player.spawnPlayer();
+
+        SDL_Rect playerRect;
+        playerRect.x = static_cast<int>(player.rect.x);
+        playerRect.y = static_cast<int>(player.rect.y);
+        playerRect.w = static_cast<int>(player.rect.w);
+        playerRect.h = static_cast<int>(player.rect.h);
+
+        player.clearPlayer(renderer, screenWidth, screenHeight);
+        SDL_RenderCopyEx(renderer, playerTexture, nullptr, &playerRect, 0, nullptr, flip);
 
 
         for (Enemy& enemy : enemies) {
@@ -113,7 +145,10 @@ void Game::gameLoop() {
         generateEnemies(enemies, renderer, screenWidth, screenHeight);
         updateEnemies(enemies, player.rect.x, player.rect.y);
         drawEnemies(enemies);
-        handleCollisions(enemies, player.rect);
+
+
+        //handleCollisions(enemies, player.rect);
+        
 
         SDL_RenderPresent(renderer);
     }

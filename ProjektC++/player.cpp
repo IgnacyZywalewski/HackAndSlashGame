@@ -1,62 +1,52 @@
 #include <iostream>
 #include "player.h"
+#include "game.h"
 
 Player::Player(SDL_Renderer* renderer, float x, float y, float w, float h)
-    : renderer(renderer) {
+    : renderer(renderer), playerTexture(nullptr), facingDirection(Direction::LEFT) {
     rect.x = x;
     rect.y = y;
     rect.w = w;
     rect.h = h;
 }
 
-Player::~Player() {}
-
-void Player::spawnPlayer() {
-    int centerX = static_cast<int>(rect.x + rect.w / 2);
-    int centerY = static_cast<int>(rect.y + rect.h / 2);
-
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-    SDL_Rect playerRect;
-    playerRect.w = static_cast<int>(rect.w);
-    playerRect.h = static_cast<int>(rect.h);
-    playerRect.x = centerX - playerRect.w / 2;
-    playerRect.y = centerY - playerRect.h / 2;
-
-    SDL_RenderFillRect(renderer, &playerRect);
+Player::~Player() {
+    SDL_DestroyTexture(playerTexture);
 }
 
-void Player::updatePlayerPosition(int screenWidth, int screenHeight) {
+void Player::spawnPlayer() {
+    SDL_Rect playerRect = { static_cast<int>(rect.x), static_cast<int>(rect.y),
+                            static_cast<int>(rect.w), static_cast<int>(rect.h) };
+    SDL_RenderCopy(renderer, playerTexture, nullptr, &playerRect);
+}
+
+void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playerSpeed) {
     const Uint8* keystates = SDL_GetKeyboardState(nullptr);
 
     double newX = rect.x;
     double newY = rect.y;
 
     if (keystates[SDL_SCANCODE_UP]) {
-        newY -= 3.0;  // Przesuniêcie w górê
+        newY -= playerSpeed;  // Przesuniêcie w górê
     }
     if (keystates[SDL_SCANCODE_DOWN]) {
-        newY += 3.0;  // Przesuniêcie w dó³
+        newY += playerSpeed;  // Przesuniêcie w dó³
     }
     if (keystates[SDL_SCANCODE_LEFT]) {
-        newX -= 3.0;  // Przesuniêcie w lewo
+        newX -= playerSpeed;  // Przesuniêcie w lewo
+        facingDirection = Direction::LEFT;
     }
     if (keystates[SDL_SCANCODE_RIGHT]) {
-        newX += 3.0;  // Przesuniêcie w prawo
+        newX += playerSpeed;  // Przesuniêcie w prawo
+        facingDirection = Direction::RIGHT; 
     }
 
     rect.x = std::max(0.0, std::min(newX, static_cast<double>(screenWidth) - rect.w));
     rect.y = std::max(0.0, std::min(newY, static_cast<double>(screenHeight) - rect.h));
 }
 
-void Player::clearPlayer(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-    SDL_Rect playerRect;
-    playerRect.w = static_cast<int>(rect.w);
-    playerRect.h = static_cast<int>(rect.h);
-    playerRect.x = static_cast<int>(rect.x);
-    playerRect.y = static_cast<int>(rect.y);
-
-    SDL_RenderFillRect(renderer, &playerRect);
+void Player::clearPlayer(SDL_Renderer* renderer, int screenWidth, int screenHeight) {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Ustaw kolor na czarny
+    SDL_Rect background = { 0, 0, screenWidth, screenHeight }; // Prostok¹t pokrywaj¹cy ca³y ekran
+    SDL_RenderFillRect(renderer, &background);
 }
