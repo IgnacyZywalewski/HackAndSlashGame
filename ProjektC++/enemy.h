@@ -12,7 +12,7 @@ struct RectEnemy {
 
 class Enemy {
 public:
-    Enemy(SDL_Renderer* renderer, float x, float y, int w, int h, float moveSpeed);
+    Enemy(SDL_Renderer* renderer, float x, float y, float w, float h, float moveSpeed);
     ~Enemy();
 
     void updateEnemyPosition(float playerX, float playerY);
@@ -23,5 +23,6 @@ public:
     
 private:
     SDL_Renderer* renderer;
+    SDL_Texture* enemyTexture;
     float speed;
 };

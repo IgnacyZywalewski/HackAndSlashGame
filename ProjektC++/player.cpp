@@ -47,6 +47,12 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playe
 
 void Player::clearPlayer(SDL_Renderer* renderer, int screenWidth, int screenHeight) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Ustaw kolor na czarny
-    SDL_Rect background = { 0, 0, screenWidth, screenHeight }; // Prostok¹t pokrywaj¹cy ca³y ekran
-    SDL_RenderFillRect(renderer, &background);
+
+    SDL_Rect clearRect;
+    clearRect.x = static_cast<int>(rect.x);
+    clearRect.y = static_cast<int>(rect.y);
+    clearRect.w = static_cast<int>(rect.w);
+    clearRect.h = static_cast<int>(rect.h);
+
+    SDL_RenderFillRect(renderer, &clearRect); // Wype³nij obszar gracza kolorem czarnym
 }
