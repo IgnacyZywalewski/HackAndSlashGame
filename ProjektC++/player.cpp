@@ -3,7 +3,7 @@
 #include "game.h"
 
 Player::Player(SDL_Renderer* renderer, float x, float y, float w, float h)
-    : renderer(renderer), playerTexture(nullptr), facingDirection(Direction::LEFT) {
+    : renderer(renderer), playerTexture(nullptr), facingDirection(Direction::LEFT), health(100) {
     rect.x = x;
     rect.y = y;
     rect.w = w;
@@ -43,16 +43,4 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playe
 
     rect.x = std::max(0.0, std::min(newX, static_cast<double>(screenWidth) - rect.w));
     rect.y = std::max(0.0, std::min(newY, static_cast<double>(screenHeight) - rect.h));
-}
-
-void Player::clearPlayer(SDL_Renderer* renderer, int screenWidth, int screenHeight) {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Ustaw kolor na czarny
-
-    SDL_Rect clearRect;
-    clearRect.x = static_cast<int>(rect.x);
-    clearRect.y = static_cast<int>(rect.y);
-    clearRect.w = static_cast<int>(rect.w);
-    clearRect.h = static_cast<int>(rect.h);
-
-    SDL_RenderFillRect(renderer, &clearRect); // Wype³nij obszar gracza kolorem czarnym
 }

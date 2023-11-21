@@ -11,8 +11,10 @@ float playerHeight = 50;
 float playerSpeed = 3.0;
 float enemySpeed = 1.0;
 
+int timeBetweenEnemies = 180; //60 klatek = 1 sekunda
+
 SDL_Texture* playerTexture = nullptr;
-//SDL_Texture* enemyTexture = nullptr;
+SDL_Texture* enemyTexture = nullptr;
 //SDL_Texture* backgroundTexture = nullptr;
 
 Game::Game()
@@ -55,52 +57,75 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
         std::cerr << "Nie mozna zaladowac tekstury tla: " << IMG_GetError() << "\n";
     }*/
 
-    playerTexture = IMG_LoadTexture(renderer, "assets/player.png");
-    if (!playerTexture) {
-        std::cerr << "Nie mozna zaladowac tekstury gracza: " << IMG_GetError() << "\n";
-    }
+    SDL_Surface* tmpSurface = IMG_Load("assets/player.png");
+    playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
+    SDL_FreeSurface(tmpSurface);
+
+    SDL_Surface* tmpSurface2 = IMG_Load("assets/enemy_bat_copy.png");
+    enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface2);
+    SDL_FreeSurface(tmpSurface2); 
+    
 }
 
 
+void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int time) {
+    static int timer = 0;
+    timer++;
+    if (timer >= time) {
+        float randomX = rand() % screenWidth;
+        float randomY = rand() % screenHeight;
 
-void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight) {
-    if (rand() % 100 < 1) { // Nowy wróg co 1% czasu
-        int randomX = rand() % screenWidth;
-        int randomY = rand() % screenHeight;
-
-        enemies.push_back(Enemy(renderer, randomX, randomY, 20, 20, enemySpeed));
+        enemies.push_back(Enemy(renderer, randomX, randomY, 50, 20));
+        timer = 0;
     }
 }
+
 
 void drawEnemies(std::vector<Enemy>& enemies) {
     for (Enemy& enemy : enemies) {
-        enemy.draw();
+        enemy.draw(enemyTexture);
     }
 }
 
 void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
     for (Enemy& enemy : enemies) {
-        enemy.updateEnemyPosition(playerX, playerY);
+        enemy.updateEnemyPosition(playerX, playerY, enemySpeed);
     }
 }
-/*
+ 
+
 bool checkPlayerEnemyCollision(const RectPlayer& playerRect, const RectEnemy& enemyRect) {
-    if (playerRect.x + playerRect.w <= enemyRect.x || playerRect.x >= enemyRect.x + enemyRect.w ||
-        playerRect.y + playerRect.h <= enemyRect.y || playerRect.y >= enemyRect.y + enemyRect.h) {
+    if (playerRect.x + playerRect.w <= enemyRect.x ||
+        playerRect.x >= enemyRect.x + enemyRect.w ||
+        playerRect.y + playerRect.h <= enemyRect.y   || 
+        playerRect.y >= enemyRect.y + enemyRect.h ) {
+        return false;
     }
     else {
         return true;
     }
-    return false;
 }
 
-void handleCollisions(std::vector<Enemy>& enemies, RectPlayer playerRect) {
-    for (int i = enemies.size() - 1; i >= 0; i--) {
-        if (checkPlayerEnemyCollision(playerRect, enemies[i].rect)) {
-            enemies.erase(enemies.begin() + i);
+
+GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& playerRect, Player& player) {
+    for (Enemy& enemy : enemies) {
+        if (checkPlayerEnemyCollision(playerRect, enemy.rect)) {
+            //std::cout << player.getHealth() << '\n';
+            enemy.isStopped = true;
+
+            player.reduceHealth(enemy.getDamage());
+            if (player.getHealth() <= 0) {
+                return GameState::EXIT;
+            }
+        }
+        else {
+            enemy.isStopped = false;
         }
     }
-}*/
+    return GameState::PLAY;
+}
+
+
 
 void Game::gameLoop() {
 
@@ -111,8 +136,11 @@ void Game::gameLoop() {
         handleEvents();
         Sleep(10);
 
+        //Ustawienie i czyszczenie t³a
+        SDL_SetRenderDrawColor(renderer, 192, 192, 192, 255);
+        SDL_RenderClear(renderer);
+
         //Gracz
-        player.clearPlayer(renderer, screenWidth, screenHeight);
         player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
 
         SDL_RendererFlip flip = SDL_FLIP_NONE; //obrót gracza
@@ -122,7 +150,7 @@ void Game::gameLoop() {
 
         player.spawnPlayer();
 
-        SDL_Rect playerRect;
+        SDL_Rect playerRect;  
         playerRect.x = static_cast<int>(player.rect.x);
         playerRect.y = static_cast<int>(player.rect.y);
         playerRect.w = static_cast<int>(player.rect.w);
@@ -131,15 +159,11 @@ void Game::gameLoop() {
         SDL_RenderCopyEx(renderer, playerTexture, nullptr, &playerRect, 0, nullptr, flip);
 
         
-
         //Wrogowie
-        for (Enemy& enemy : enemies) {
-            enemy.clearEnemy(renderer);
-        }
-        generateEnemies(enemies, renderer, screenWidth, screenHeight);
+        generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
         updateEnemies(enemies, player.rect.x, player.rect.y);
         drawEnemies(enemies);
-        //handleCollisions(enemies, player.rect);
+        gameState = handleCollisions(enemies, player.rect, player);
         
         
         SDL_RenderPresent(renderer);

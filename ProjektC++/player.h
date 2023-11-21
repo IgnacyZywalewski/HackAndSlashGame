@@ -19,12 +19,14 @@ public:
 
     void spawnPlayer();
     void updatePlayerPosition(int screenWidth, int screenHeight, float playerSpeed);
-    void clearPlayer(SDL_Renderer* renderer, int screenWidth, int screenHeight);
+    float getHealth() const { return health; }
+    void reduceHealth(float damage) { health -= damage; }
 
     RectPlayer rect;
     Direction facingDirection;
 
 private:
+    float health = 100;
     SDL_Renderer* renderer;
     SDL_Texture* playerTexture;
 };
