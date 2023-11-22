@@ -27,7 +27,7 @@ public:
     
 private:
     float damage = 0.1;
-    float health = 10;
+    float health = 10.0;
     SDL_Renderer* renderer;
     SDL_Texture* enemyTexture;
 };

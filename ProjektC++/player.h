@@ -27,7 +27,7 @@ public:
     Direction facingDirection;
 
 private:
-    float health = 100;
+    float health = 100.0;
     SDL_Renderer* renderer;
     SDL_Texture* playerTexture;
     Weapon weapon;

@@ -14,7 +14,9 @@ Weapon::Weapon(SDL_Renderer* renderer, float x, float y, float w, float h)
     SDL_FreeSurface(tmpSurface3);
 }
 
-Weapon::~Weapon() {}
+Weapon::~Weapon() {
+    SDL_DestroyTexture(weaponTexture);
+}
 
 void Weapon::drawWeapon(SDL_Renderer* renderer) {
     SDL_RendererFlip flip = SDL_FLIP_NONE;
