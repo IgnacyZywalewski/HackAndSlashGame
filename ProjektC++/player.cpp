@@ -1,9 +1,11 @@
 #include <iostream>
+
 #include "player.h"
 #include "game.h"
+#include "weapons.h"
 
 Player::Player(SDL_Renderer* renderer, float x, float y, float w, float h)
-    : renderer(renderer), playerTexture(nullptr), facingDirection(Direction::LEFT), health(100) {
+    : renderer(renderer), playerTexture(nullptr), facingDirection(Direction::RIGHT), weapon(renderer, x + w, y + h / 2, 80, 30) {
     rect.x = x;
     rect.y = y;
     rect.w = w;
@@ -18,6 +20,8 @@ void Player::spawnPlayer() {
     SDL_Rect playerRect = { static_cast<int>(rect.x), static_cast<int>(rect.y),
                             static_cast<int>(rect.w), static_cast<int>(rect.h) };
     SDL_RenderCopy(renderer, playerTexture, nullptr, &playerRect);
+
+    weapon.drawWeapon(renderer); 
 }
 
 void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playerSpeed) {
@@ -38,9 +42,20 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playe
     }
     if (keystates[SDL_SCANCODE_RIGHT]) {
         newX += playerSpeed;  // Przesuniêcie w prawo
-        facingDirection = Direction::RIGHT; 
+        facingDirection = Direction::RIGHT;
     }
 
     rect.x = std::max(0.0, std::min(newX, static_cast<double>(screenWidth) - rect.w));
     rect.y = std::max(0.0, std::min(newY, static_cast<double>(screenHeight) - rect.h));
+
+
+    if (facingDirection == Direction::LEFT) {
+        weapon.setWeaponDirection(WeaponDirection::LEFT);
+        weapon.updatePosition(rect.x - rect.w - 10, rect.y + rect.h / 2);
+    }
+    else {
+        weapon.setWeaponDirection(WeaponDirection::RIGHT);
+        weapon.updatePosition(rect.x + rect.w - 10, rect.y + rect.h / 2);
+    }
+    
 }

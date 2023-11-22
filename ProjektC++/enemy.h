@@ -18,6 +18,8 @@ public:
     void updateEnemyPosition(float playerX, float playerY, float enemySpeed);
     void draw(SDL_Texture* enemyTexture);
     float getDamage() const { return damage; }
+    float getHealth() const { return health; }
+    void reduceHealth(float damage) { health -= damage; }
 
     bool isStopped = false;
 
@@ -25,6 +27,7 @@ public:
     
 private:
     float damage = 0.1;
+    float health = 10;
     SDL_Renderer* renderer;
     SDL_Texture* enemyTexture;
 };

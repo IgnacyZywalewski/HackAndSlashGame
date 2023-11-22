@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include "weapons.h"
 
 enum class Direction { LEFT, RIGHT };
 
@@ -29,4 +30,5 @@ private:
     float health = 100;
     SDL_Renderer* renderer;
     SDL_Texture* playerTexture;
+    Weapon weapon;
 };

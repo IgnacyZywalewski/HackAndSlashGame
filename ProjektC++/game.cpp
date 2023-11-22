@@ -5,6 +5,7 @@
 #include "game.h"
 #include "player.h"
 #include "enemy.h"
+#include "weapons.h"
 
 float playerWidth = 50;
 float playerHeight = 50;
@@ -15,6 +16,7 @@ int timeBetweenEnemies = 180; //60 klatek = 1 sekunda
 
 SDL_Texture* playerTexture = nullptr;
 SDL_Texture* enemyTexture = nullptr;
+//SDL_Texture* weaponTexture = nullptr;
 //SDL_Texture* backgroundTexture = nullptr;
 
 Game::Game()
@@ -61,7 +63,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
 
-    SDL_Surface* tmpSurface2 = IMG_Load("assets/enemy_bat_copy.png");
+    SDL_Surface* tmpSurface2 = IMG_Load("assets/enemy_bat.png");
     enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface2);
     SDL_FreeSurface(tmpSurface2); 
     
@@ -106,31 +108,72 @@ bool checkPlayerEnemyCollision(const RectPlayer& playerRect, const RectEnemy& en
     }
 }
 
+bool checkWeaponEnemyCollision(const RectWeapon& weaponRect, const RectEnemy& enemyRect) {
+    SDL_Rect weaponSDLRect = { static_cast<int>(weaponRect.x), static_cast<int>(weaponRect.y),
+                              static_cast<int>(weaponRect.w), static_cast<int>(weaponRect.h) };
 
-GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& playerRect, Player& player) {
-    for (Enemy& enemy : enemies) {
-        if (checkPlayerEnemyCollision(playerRect, enemy.rect)) {
-            //std::cout << player.getHealth() << '\n';
-            enemy.isStopped = true;
+    SDL_Rect enemySDLRect = { static_cast<int>(enemyRect.x), static_cast<int>(enemyRect.y),
+                              static_cast<int>(enemyRect.w), static_cast<int>(enemyRect.h) };
 
-            player.reduceHealth(enemy.getDamage());
+    return SDL_HasIntersection(&weaponSDLRect, &enemySDLRect);
+}
+
+
+
+GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& playerRect, Player& player, Weapon& weapon) {
+    for (auto it = enemies.begin(); it != enemies.end();) {
+        if (checkPlayerEnemyCollision(playerRect, it->rect)) {
+            it->isStopped = true;
+
+            player.reduceHealth(it->getDamage());
             if (player.getHealth() <= 0) {
                 return GameState::EXIT;
             }
         }
         else {
-            enemy.isStopped = false;
+            it->isStopped = false;
+        }
+
+        if (checkWeaponEnemyCollision(weapon.rect, it->rect)) {
+            it->reduceHealth(weapon.getDamage());
+            if (it->getHealth() <= 0) {
+                it = enemies.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+        else {
+            ++it;
         }
     }
     return GameState::PLAY;
 }
 
 
+void Game::handleEvents() {
+    SDL_Event event;
+    SDL_PollEvent(&event);
+
+    switch (event.type) {
+    case SDL_QUIT:
+        gameState = GameState::EXIT;
+        break;
+    case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+        case SDLK_ESCAPE:
+            gameState = GameState::EXIT;
+            break;
+        }
+        break;
+    }
+}
 
 void Game::gameLoop() {
 
     Player player(renderer, screenWidth/2 - (playerWidth/2), screenHeight/2 - (playerHeight/2), playerWidth, playerHeight);
     std::vector<Enemy> enemies;
+
 
     while (gameState != GameState::EXIT) {
         handleEvents();
@@ -163,28 +206,9 @@ void Game::gameLoop() {
         generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
         updateEnemies(enemies, player.rect.x, player.rect.y);
         drawEnemies(enemies);
-        gameState = handleCollisions(enemies, player.rect, player);
+        gameState = handleCollisions(enemies, player.rect, player, weapon);
         
         
         SDL_RenderPresent(renderer);
-    }
-}
-
-
-void Game::handleEvents() {
-    SDL_Event event;
-    SDL_PollEvent(&event);
-
-    switch (event.type) {
-    case SDL_QUIT:
-        gameState = GameState::EXIT;
-        break;
-    case SDL_KEYDOWN:
-        switch (event.key.keysym.sym) {
-        case SDLK_ESCAPE:
-            gameState = GameState::EXIT;
-            break;
-        }
-        break;
     }
 }
