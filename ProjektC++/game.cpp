@@ -12,12 +12,9 @@ float playerHeight = 50;
 float playerSpeed = 3.0;
 float enemySpeed = 1.0;
 
-int timeBetweenEnemies = 180; //60 klatek = 1 sekunda
+int timeBetweenEnemies = 60; //60 klatek = 1 sekunda
 
-SDL_Texture* playerTexture = nullptr;
 SDL_Texture* enemyTexture = nullptr;
-//SDL_Texture* weaponTexture = nullptr;
-//SDL_Texture* backgroundTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
@@ -59,14 +56,20 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
         std::cerr << "Nie mozna zaladowac tekstury tla: " << IMG_GetError() << "\n";
     }*/
 
-    SDL_Surface* tmpSurface = IMG_Load("assets/player.png");
-    playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-    SDL_FreeSurface(tmpSurface);
-
     SDL_Surface* tmpSurface2 = IMG_Load("assets/enemy_bat.png");
     enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface2);
     SDL_FreeSurface(tmpSurface2); 
     
+}
+
+template<typename T>
+SDL_Rect convertToSDLRect(const T& rect) {
+    SDL_Rect sdlRect;
+    sdlRect.x = static_cast<int>(rect.x);
+    sdlRect.y = static_cast<int>(rect.y);
+    sdlRect.w = static_cast<int>(rect.w);
+    sdlRect.h = static_cast<int>(rect.h);
+    return sdlRect;
 }
 
 
@@ -77,7 +80,10 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
         float randomX = rand() % screenWidth;
         float randomY = rand() % screenHeight;
 
-        enemies.push_back(Enemy(renderer, randomX, randomY, 50, 20));
+        //if (enemies.size() < 1) {
+            enemies.push_back(Enemy(renderer, randomX, randomY, 50, 20));
+        //}
+        
         timer = 0;
     }
 }
@@ -96,39 +102,23 @@ void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
 }
  
 
-bool checkPlayerEnemyCollision(const RectPlayer& playerRect, const RectEnemy& enemyRect) {
-    if (playerRect.x + playerRect.w <= enemyRect.x ||
-        playerRect.x >= enemyRect.x + enemyRect.w ||
-        playerRect.y + playerRect.h <= enemyRect.y || 
-        playerRect.y >= enemyRect.y + enemyRect.h ) {
-        return false;
-    }
-    else {
-        return true;
-    }
+bool checkCollision(SDL_Rect rectA, SDL_Rect rectB) {
+    if(SDL_HasIntersection(&rectA, &rectB)) return true;
+    return false;
 }
 
-/*
-bool checkWeaponEnemyCollision(const RectWeapon& weaponRect, const RectEnemy& enemyRect) {
-    if (weaponRect.x + weaponRect.w <= enemyRect.x ||
-        weaponRect.x >= enemyRect.x + enemyRect.w ||
-        weaponRect.y + weaponRect.h <= enemyRect.y ||
-        weaponRect.y >= enemyRect.y + enemyRect.h) {
-        return false;
-    }
-    else {
-        return true;
-    }
-}*/
 
+GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Player& playerObject, Weapon& weapon) {
+    for (auto it = enemies.begin(); it != enemies.end();) {
+        SDL_Rect playerRect = convertToSDLRect(player);
+        SDL_Rect enemyRect = convertToSDLRect(it->rect);
+        SDL_Rect weaponRect = convertToSDLRect(weapon.rectWeapon);
 
-GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& playerRect, Player& player) {
-    for (auto it = enemies.begin(); it != enemies.end(); it++) {
-        if (checkPlayerEnemyCollision(playerRect, it->rect)) {
+        if (checkCollision(playerRect, enemyRect)) {
             it->isStopped = true;
-
-            player.reduceHealth(it->getDamage());
-            if (player.getHealth() <= 0) {
+            //std::cout << "kolizja wrog\n";
+            playerObject.reduceHealth(it->getDamage());
+            if (playerObject.getHealth() <= 0) {
                 return GameState::EXIT;
             }
         }
@@ -136,13 +126,19 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& playerRect, 
             it->isStopped = false;
         }
 
-        /*
-        if (checkWeaponEnemyCollision(weapon.rect, it->rect)) {
+        if (checkCollision(weaponRect, enemyRect)) {
+            std::cout << "kolizja gracz!\n";
             it->reduceHealth(weapon.getDamage());
             if (it->getHealth() <= 0) {
                 it = enemies.erase(it);
             }
-        }*/
+            else {
+                ++it;
+            }
+        }
+        else {
+            ++it;
+        }
     }
     return GameState::PLAY;
 }
@@ -167,14 +163,15 @@ void Game::handleEvents() {
 }
 
 void Game::gameLoop() {
-
-    Player player(renderer, screenWidth/2 - (playerWidth/2), screenHeight/2 - (playerHeight/2), playerWidth, playerHeight);
+    Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
     std::vector<Enemy> enemies;
-    //Weapon weapon(renderer, player.rect.x + player.rect.w, (player.rect.y + player.rect.h)/2, 80, 30);
+    Weapon weapon(renderer, player.rect.x + player.rect.w, (player.rect.y + player.rect.h) / 2, 80, 30);
 
     while (gameState != GameState::EXIT) {
         handleEvents();
         Sleep(10);
+
+        
 
         //Ustawienie i czyszczenie t³a
         SDL_SetRenderDrawColor(renderer, 169, 169, 169, 255);
@@ -182,29 +179,23 @@ void Game::gameLoop() {
 
         //Gracz
         player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
-
-        SDL_RendererFlip flip = SDL_FLIP_NONE; //obrót gracza
-        if (player.facingDirection == Direction::LEFT) {
-            flip = SDL_FLIP_HORIZONTAL;
-        }
         player.spawnPlayer();
 
-        SDL_Rect playerRect;  
-        playerRect.x = static_cast<int>(player.rect.x);
-        playerRect.y = static_cast<int>(player.rect.y);
-        playerRect.w = static_cast<int>(player.rect.w);
-        playerRect.h = static_cast<int>(player.rect.h);
         
-        SDL_RenderCopyEx(renderer, playerTexture, nullptr, &playerRect, 0, nullptr, flip);
 
-        
         //Wrogowie
         generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
         updateEnemies(enemies, player.rect.x, player.rect.y);
         drawEnemies(enemies);
-        gameState = handleCollisions(enemies, player.rect, player);
+
+        //for (auto i : enemies) {
+        //    std::cout << "Zdrowie gracza: " << player.getHealth() << ", Zdrowie wroga: " << i.getHealth() << '\n';
+        //}
+
+        // Obs³uga kolizji
+        gameState = handleCollisions(enemies, player.rect, player, weapon);
         
-        
+
         SDL_RenderPresent(renderer);
     }
 }

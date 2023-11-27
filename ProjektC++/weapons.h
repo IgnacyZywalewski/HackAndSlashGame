@@ -21,10 +21,10 @@ public:
     void setWeaponDirection(WeaponDirection direction);
     float getDamage() const { return damage; }
 
-    RectWeapon rect;
+    RectWeapon rectWeapon;
     WeaponDirection weaponDirection; 
 
 private:
     SDL_Texture* weaponTexture;
-    float damage = 5.0;
+    float damage = 0.5f;
 };

@@ -1,15 +1,20 @@
 #include <iostream>
+#include <SDL_image.h>
 
 #include "player.h"
 #include "game.h"
 #include "weapons.h"
 
 Player::Player(SDL_Renderer* renderer, float x, float y, float w, float h)
-    : renderer(renderer), playerTexture(nullptr), facingDirection(Direction::RIGHT), weapon(renderer, x + w, y + h / 2, 80, 30) {
+    : renderer(renderer), facingDirection(Direction::RIGHT), weapon(renderer, x + w, y + h / 2, 80, 30) {
     rect.x = x;
     rect.y = y;
     rect.w = w;
     rect.h = h;
+
+    SDL_Surface* tmpSurface = IMG_Load("assets/player.png");
+    playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
+    SDL_FreeSurface(tmpSurface);
 }
 
 Player::~Player() {
@@ -17,9 +22,13 @@ Player::~Player() {
 }
 
 void Player::spawnPlayer() {
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    if (facingDirection == Direction::LEFT) {
+        flip = SDL_FLIP_HORIZONTAL;
+    }
     SDL_Rect playerRect = { static_cast<int>(rect.x), static_cast<int>(rect.y),
                             static_cast<int>(rect.w), static_cast<int>(rect.h) };
-    SDL_RenderCopy(renderer, playerTexture, nullptr, &playerRect);
+    SDL_RenderCopyEx(renderer, playerTexture, nullptr, &playerRect, 0, nullptr, flip);
 
     weapon.drawWeapon(renderer); 
 }

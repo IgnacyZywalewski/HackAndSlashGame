@@ -26,8 +26,8 @@ public:
     RectEnemy rect;
     
 private:
-    float damage = 0.1;
-    float health = 10.0;
+    float damage = 0.1f;
+    float health = 10.0f;
     SDL_Renderer* renderer;
     SDL_Texture* enemyTexture;
 };
