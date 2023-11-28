@@ -24,7 +24,7 @@ public:
     bool isStopped = false;
 
     RectEnemy rect;
-    
+
 private:
     float damage = 0.1f;
     float health = 10.0f;

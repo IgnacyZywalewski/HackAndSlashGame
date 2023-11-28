@@ -79,11 +79,9 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
     if (timer >= time) {
         float randomX = rand() % screenWidth;
         float randomY = rand() % screenHeight;
-
-        //if (enemies.size() < 1) {
-            enemies.push_back(Enemy(renderer, randomX, randomY, 50, 20));
-        //}
         
+        enemies.push_back(Enemy(renderer, randomX, randomY, 50, 20));
+               
         timer = 0;
     }
 }
@@ -116,7 +114,6 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
 
         if (checkCollision(playerRect, enemyRect)) {
             it->isStopped = true;
-            //std::cout << "kolizja wrog\n";
             playerObject.reduceHealth(it->getDamage());
             if (playerObject.getHealth() <= 0) {
                 return GameState::EXIT;
@@ -127,7 +124,6 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
         }
 
         if (checkCollision(weaponRect, enemyRect)) {
-            //std::cout << "kolizja gracz!\n";
             it->reduceHealth(weapon.getDamage());
             if (it->getHealth() <= 0) {
                 it = enemies.erase(it);

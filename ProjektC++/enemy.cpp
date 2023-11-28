@@ -4,7 +4,7 @@
 
 #include "enemy.h"
 
-Enemy::Enemy(SDL_Renderer* renderer, float x, float y, float w, float h) 
+Enemy::Enemy(SDL_Renderer* renderer, float x, float y, float w, float h)
     : enemyTexture(nullptr) {
     this->renderer = renderer;
 
