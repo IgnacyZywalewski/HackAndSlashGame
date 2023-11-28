@@ -17,14 +17,15 @@ public:
     ~Weapon();
 
     void drawWeapon(SDL_Renderer* renderer);
-    void updatePosition(float playerX, float playerY);
+    void updatePosition(float playerX, float playerY, float playerW, float playerH);
     void setWeaponDirection(WeaponDirection direction);
     float getDamage() const { return damage; }
 
-    RectWeapon rectWeapon;
+    RectWeapon rect;
     WeaponDirection weaponDirection; 
 
 private:
     SDL_Texture* weaponTexture;
+    SDL_Renderer* renderer;
     float damage = 0.5f;
 };

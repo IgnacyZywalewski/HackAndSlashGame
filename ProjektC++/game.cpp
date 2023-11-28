@@ -112,7 +112,7 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
     for (auto it = enemies.begin(); it != enemies.end();) {
         SDL_Rect playerRect = convertToSDLRect(player);
         SDL_Rect enemyRect = convertToSDLRect(it->rect);
-        SDL_Rect weaponRect = convertToSDLRect(weapon.rectWeapon);
+        SDL_Rect weaponRect = convertToSDLRect(weapon.rect);
 
         if (checkCollision(playerRect, enemyRect)) {
             it->isStopped = true;
@@ -127,7 +127,7 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
         }
 
         if (checkCollision(weaponRect, enemyRect)) {
-            std::cout << "kolizja gracz!\n";
+            //std::cout << "kolizja gracz!\n";
             it->reduceHealth(weapon.getDamage());
             if (it->getHealth() <= 0) {
                 it = enemies.erase(it);
@@ -171,8 +171,6 @@ void Game::gameLoop() {
         handleEvents();
         Sleep(10);
 
-        
-
         //Ustawienie i czyszczenie t³a
         SDL_SetRenderDrawColor(renderer, 169, 169, 169, 255);
         SDL_RenderClear(renderer);
@@ -181,16 +179,14 @@ void Game::gameLoop() {
         player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
         player.spawnPlayer();
 
-        
+        //Broñ
+        weapon.updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+        weapon.drawWeapon(renderer);
 
         //Wrogowie
         generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
         updateEnemies(enemies, player.rect.x, player.rect.y);
         drawEnemies(enemies);
-
-        //for (auto i : enemies) {
-        //    std::cout << "Zdrowie gracza: " << player.getHealth() << ", Zdrowie wroga: " << i.getHealth() << '\n';
-        //}
 
         // Obs³uga kolizji
         gameState = handleCollisions(enemies, player.rect, player, weapon);
