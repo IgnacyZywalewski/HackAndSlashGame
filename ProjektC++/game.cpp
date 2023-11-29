@@ -51,11 +51,6 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
         std::cerr << "Nie mozna zainicjowaæ SDL_Image: " << IMG_GetError() << "\n";
     }
 
-    /*backgroundTexture = IMG_LoadTexture(renderer, "assets/background.png");
-    if (!backgroundTexture) {
-        std::cerr << "Nie mozna zaladowac tekstury tla: " << IMG_GetError() << "\n";
-    }*/
-
     SDL_Surface* tmpSurface2 = IMG_Load("assets/enemy_bat.png");
     enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface2);
     SDL_FreeSurface(tmpSurface2); 

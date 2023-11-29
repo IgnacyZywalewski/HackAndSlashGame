@@ -46,12 +46,10 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playe
     if (keystates[SDL_SCANCODE_LEFT]) {
         newX -= playerSpeed;  // Przesuniêcie w lewo
         facingDirection = Direction::LEFT;
-        //weapon.setWeaponDirection(WeaponDirection::LEFT);
     }
     if (keystates[SDL_SCANCODE_RIGHT]) {
         newX += playerSpeed;  // Przesuniêcie w prawo
         facingDirection = Direction::RIGHT;
-        //weapon.setWeaponDirection(WeaponDirection::RIGHT);
     }
 
     rect.x = std::max(0.0, std::min(newX, static_cast<double>(screenWidth) - rect.w));
