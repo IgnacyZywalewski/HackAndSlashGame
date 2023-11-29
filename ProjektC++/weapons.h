@@ -27,5 +27,5 @@ public:
 private:
     SDL_Texture* weaponTexture;
     SDL_Renderer* renderer;
-    float damage = 0.5f;
+    float damage = 1.0f;
 };

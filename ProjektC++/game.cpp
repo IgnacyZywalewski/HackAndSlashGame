@@ -86,7 +86,6 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
     }
 }
 
-
 void drawEnemies(std::vector<Enemy>& enemies) {
     for (Enemy& enemy : enemies) {
         enemy.draw(enemyTexture);
@@ -99,12 +98,10 @@ void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
     }
 }
  
-
 bool checkCollision(SDL_Rect rectA, SDL_Rect rectB) {
     if(SDL_HasIntersection(&rectA, &rectB)) return true;
     return false;
 }
-
 
 GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Player& playerObject, Weapon& weapon) {
     for (auto it = enemies.begin(); it != enemies.end();) {
@@ -139,25 +136,6 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
     return GameState::PLAY;
 }
 
-
-void Game::handleEvents() {
-    SDL_Event event;
-    SDL_PollEvent(&event);
-
-    switch (event.type) {
-    case SDL_QUIT:
-        gameState = GameState::EXIT;
-        break;
-    case SDL_KEYDOWN:
-        switch (event.key.keysym.sym) {
-        case SDLK_ESCAPE:
-            gameState = GameState::EXIT;
-            break;
-        }
-        break;
-    }
-}
-
 void Game::gameLoop() {
     Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
     std::vector<Enemy> enemies;
@@ -189,5 +167,23 @@ void Game::gameLoop() {
         
 
         SDL_RenderPresent(renderer);
+    }
+}
+
+void Game::handleEvents() {
+    SDL_Event event;
+    SDL_PollEvent(&event);
+
+    switch (event.type) {
+    case SDL_QUIT:
+        gameState = GameState::EXIT;
+        break;
+    case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+        case SDLK_ESCAPE:
+            gameState = GameState::EXIT;
+            break;
+        }
+        break;
     }
 }
