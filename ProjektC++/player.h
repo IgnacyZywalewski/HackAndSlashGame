@@ -30,5 +30,4 @@ private:
     float health = 100.0f;
     SDL_Renderer* renderer;
     SDL_Texture* playerTexture;
-    //Weapon weapon;
 };

@@ -6,6 +6,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "weapons.h"
+#include "render.h"
 
 float playerWidth = 50;
 float playerHeight = 50;
@@ -13,6 +14,7 @@ float playerSpeed = 3.0;
 float enemySpeed = 1.0;
 
 int timeBetweenEnemies = 60; //60 klatek = 1 sekunda
+int enemiesDefeted = 0;
 
 SDL_Texture* enemyTexture = nullptr;
 
@@ -23,12 +25,8 @@ Game::Game()
 Game::~Game() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
-}
-
-void Game::run() {
-    init("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
-    gameLoop();
 }
 
 void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
@@ -55,6 +53,11 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface2);
     SDL_FreeSurface(tmpSurface2); 
     
+}
+
+void Game::run() {
+    init("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+    gameLoop();
 }
 
 template<typename T>
@@ -119,6 +122,7 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
             it->reduceHealth(weapon.getDamage());
             if (it->getHealth() <= 0) {
                 it = enemies.erase(it);
+                enemiesDefeted++;
             }
             else {
                 ++it;
@@ -129,40 +133,6 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
         }
     }
     return GameState::PLAY;
-}
-
-void Game::gameLoop() {
-    Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
-    std::vector<Enemy> enemies;
-    Weapon weapon(renderer, player.rect.x + player.rect.w, (player.rect.y + player.rect.h) / 2, 80, 30);
-
-    while (gameState != GameState::EXIT) {
-        handleEvents();
-        Sleep(10);
-
-        //Ustawienie i czyszczenie t³a
-        SDL_SetRenderDrawColor(renderer, 169, 169, 169, 255);
-        SDL_RenderClear(renderer);
-
-        //Gracz
-        player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
-        player.spawnPlayer();
-
-        //Broñ
-        weapon.updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
-        weapon.drawWeapon(renderer);
-
-        //Wrogowie
-        generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
-        updateEnemies(enemies, player.rect.x, player.rect.y);
-        drawEnemies(enemies);
-
-        // Obs³uga kolizji
-        gameState = handleCollisions(enemies, player.rect, player, weapon);
-        
-
-        SDL_RenderPresent(renderer);
-    }
 }
 
 void Game::handleEvents() {
@@ -180,5 +150,46 @@ void Game::handleEvents() {
             break;
         }
         break;
+    }
+}
+
+void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon) {
+    // Logika aktualizacji gracza, wrogów, broni, kolizji itp.
+    player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
+    weapon.updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+    generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
+    updateEnemies(enemies, player.rect.x, player.rect.y);
+    handleCollisions(enemies, player.rect, player, weapon);
+}
+
+void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render) {
+    // Renderowanie i czyszczenie t³a
+    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 255);
+    SDL_RenderClear(renderer);
+
+    // Renderowanie interfejsu
+    render.renderHealth(player.getHealth());
+    render.renderScore(enemiesDefeted);
+    render.renderFPS();
+
+    // Renderowanie gracza, wrogów, broni.
+    player.spawnPlayer();
+    weapon.drawWeapon(renderer);
+    drawEnemies(enemies);
+
+    // Wyœwietlanie na ekranie
+    SDL_RenderPresent(renderer);
+}
+
+void Game::gameLoop() {
+    Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
+    std::vector<Enemy> enemies;
+    Weapon weapon(renderer, player.rect.x + player.rect.w, (player.rect.y + player.rect.h) / 2, 80, 30);
+    Render render(renderer, screenWidth, screenHeight);
+
+    while (gameState != GameState::EXIT) {
+        handleEvents();
+        updateGameEntities(player, enemies, weapon);
+        renderGame(player, enemies, weapon, render);
     }
 }
