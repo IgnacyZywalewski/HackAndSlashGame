@@ -10,10 +10,10 @@
 
 float playerWidth = 50;
 float playerHeight = 50;
-float playerSpeed = 0.8;
-float enemySpeed = 0.3;
+float playerSpeed = 2;
+float enemySpeed = 1;
 
-int timeBetweenEnemies = 270; //60 klatek = 1 sekunda
+int timeBetweenEnemies = 1000;
 int enemiesDefeted = 0;
 
 SDL_Texture* enemyTexture = nullptr;
@@ -71,18 +71,32 @@ SDL_Rect convertToSDLRect(const T& rect) {
 }
 
 
-void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int time) {
-    static int timer = 0;
-    timer++;
-    if (timer >= time) {
+void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& timeBetweenEnemies, int& enemiesDefeated, bool& difficultyIncreased) {
+    static int lastEnemyTime = 0;
+    int currentTime = SDL_GetTicks();
+
+    if (currentTime > lastEnemyTime + timeBetweenEnemies) {
         float randomX = rand() % screenWidth;
         float randomY = rand() % screenHeight;
-        
+
         enemies.push_back(Enemy(renderer, randomX, randomY, 50, 20));
-               
-        timer = 0;
+        lastEnemyTime = currentTime;
+    }
+
+    if (enemiesDefeated % 10 == 0 && enemiesDefeated > 0 && !difficultyIncreased) {
+        if (timeBetweenEnemies > 100) { 
+            timeBetweenEnemies -= 50;   
+            difficultyIncreased = true;
+        }
+    }
+
+    if (enemiesDefeated % 10 != 0) {
+        difficultyIncreased = false;
     }
 }
+
+
+
 
 void drawEnemies(std::vector<Enemy>& enemies) {
     for (Enemy& enemy : enemies) {
@@ -155,9 +169,10 @@ void Game::handleEvents() {
 
 void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon) {
     // Logika aktualizacji gracza, wrogów, broni, kolizji itp.
+    Sleep(10);
     player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
     weapon.updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
-    generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
+    generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies, enemiesDefeted, player.flag);
     updateEnemies(enemies, player.rect.x, player.rect.y);
 }
 
@@ -187,9 +202,9 @@ void Game::gameLoop() {
     Render render(renderer, screenWidth, screenHeight);
 
     while (gameState != GameState::EXIT) {
-        handleEvents();
         updateGameEntities(player, enemies, weapon);
         gameState = handleCollisions(enemies, player.rect, player, weapon);
         renderGame(player, enemies, weapon, render);
+        handleEvents();
     }
 }

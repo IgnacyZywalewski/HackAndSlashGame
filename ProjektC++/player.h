@@ -25,6 +25,7 @@ public:
 
     RectPlayer rect;
     Direction facingDirection;
+    bool flag = false;
 
 private:
     float health = 100.0f;

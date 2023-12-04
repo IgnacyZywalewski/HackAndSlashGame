@@ -29,6 +29,5 @@ private:
 
     const int screenHeight;
     const int screenWidth;
-
     GameState gameState;
 };
