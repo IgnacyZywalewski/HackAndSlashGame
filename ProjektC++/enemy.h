@@ -9,7 +9,6 @@ struct RectEnemy {
     float h;
 };
 
-
 class Enemy {
 public:
     Enemy(SDL_Renderer* renderer, float x, float y, float w, float h);
@@ -22,11 +21,10 @@ public:
     void reduceHealth(float damage) { health -= damage; }
 
     bool isStopped = false;
-
     RectEnemy rect;
 
 private:
-    float damage = 0.017f; // 1 deamage co 1 sekunde
+    float damage = 0.017f; // 1 damage co 1 sekundê
     float health = 10.0f;
     SDL_Renderer* renderer;
     SDL_Texture* enemyTexture;

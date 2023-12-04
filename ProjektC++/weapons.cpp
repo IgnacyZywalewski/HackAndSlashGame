@@ -1,6 +1,4 @@
 #include <SDL_image.h>
-#include <iostream>
-
 #include "weapons.h"
 
 Weapon::Weapon(SDL_Renderer* renderer, float x, float y, float w, float h)
@@ -32,7 +30,6 @@ void Weapon::drawWeapon(SDL_Renderer* renderer) {
     SDL_Rect weaponRect = { static_cast<int>(rect.x), static_cast<int>(rect.y),
                             static_cast<int>(rect.w), static_cast<int>(rect.h) };
     SDL_RenderCopyEx(renderer, weaponTexture, nullptr, &weaponRect, 0, nullptr, flip);
-
 }
 
 void Weapon::updatePosition(float playerX, float playerY, float playerW, float playerH) {
@@ -40,19 +37,17 @@ void Weapon::updatePosition(float playerX, float playerY, float playerW, float p
 
     if (keystates[SDL_SCANCODE_LEFT]) {
         setWeaponDirection(WeaponDirection::LEFT);
-        
     }
     if (keystates[SDL_SCANCODE_RIGHT]) {
         setWeaponDirection(WeaponDirection::RIGHT);
-        
     }
-    
+
     if (weaponDirection == WeaponDirection::LEFT) {
         rect.x = playerX - playerW - 10;
         rect.y = playerY + (playerH / 2) - 10;
     }
-    else if(weaponDirection == WeaponDirection::RIGHT){
+    else if (weaponDirection == WeaponDirection::RIGHT) {
         rect.x = playerX + playerW - 10;
-        rect.y = playerY + (playerH / 2) - 10;  
+        rect.y = playerY + (playerH / 2) - 10;
     }
 }

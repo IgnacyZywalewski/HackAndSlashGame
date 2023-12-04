@@ -22,7 +22,7 @@ public:
     float getDamage() const { return damage; }
 
     RectWeapon rect;
-    WeaponDirection weaponDirection; 
+    WeaponDirection weaponDirection;
 
 private:
     SDL_Texture* weaponTexture;

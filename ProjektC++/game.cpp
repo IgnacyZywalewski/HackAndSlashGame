@@ -10,10 +10,10 @@
 
 float playerWidth = 50;
 float playerHeight = 50;
-float playerSpeed = 3.0;
-float enemySpeed = 1.0;
+float playerSpeed = 0.8;
+float enemySpeed = 0.3;
 
-int timeBetweenEnemies = 60; //60 klatek = 1 sekunda
+int timeBetweenEnemies = 270; //60 klatek = 1 sekunda
 int enemiesDefeted = 0;
 
 SDL_Texture* enemyTexture = nullptr;
@@ -159,7 +159,6 @@ void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapo
     weapon.updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
     generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies);
     updateEnemies(enemies, player.rect.x, player.rect.y);
-    handleCollisions(enemies, player.rect, player, weapon);
 }
 
 void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render) {
@@ -190,6 +189,7 @@ void Game::gameLoop() {
     while (gameState != GameState::EXIT) {
         handleEvents();
         updateGameEntities(player, enemies, weapon);
+        gameState = handleCollisions(enemies, player.rect, player, weapon);
         renderGame(player, enemies, weapon, render);
     }
 }

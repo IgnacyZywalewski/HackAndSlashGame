@@ -1,7 +1,5 @@
 #include <SDL.h>
 #include <SDL_image.h>
-#include <iostream>
-
 #include "enemy.h"
 
 Enemy::Enemy(SDL_Renderer* renderer, float x, float y, float w, float h)
