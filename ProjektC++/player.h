@@ -13,7 +13,7 @@ struct RectPlayer {
 };
 
 
-class Player {  
+class Player {
 public:
     Player(SDL_Renderer* renderer, float x, float y, float w, float h);
     ~Player();

@@ -96,8 +96,6 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
 }
 
 
-
-
 void drawEnemies(std::vector<Enemy>& enemies) {
     for (Enemy& enemy : enemies) {
         enemy.draw(enemyTexture);

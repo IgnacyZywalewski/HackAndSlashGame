@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <SDL_image.h>
 
 #include "player.h"
@@ -6,13 +6,13 @@
 #include "weapons.h"
 
 Player::Player(SDL_Renderer* renderer, float x, float y, float w, float h)
-    : renderer(renderer), facingDirection(Direction::RIGHT){
+    : renderer(renderer), facingDirection(Direction::LEFT) {
     rect.x = x;
     rect.y = y;
     rect.w = w;
     rect.h = h;
 
-    SDL_Surface* tmpSurface = IMG_Load("assets/player.png");
+    SDL_Surface* tmpSurface = IMG_Load("assets/player_warrior.png");
     playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
 }
@@ -23,7 +23,7 @@ Player::~Player() {
 
 void Player::spawnPlayer() {
     SDL_RendererFlip flip = SDL_FLIP_NONE;
-    if (facingDirection == Direction::LEFT) {
+    if (facingDirection == Direction::RIGHT) {
         flip = SDL_FLIP_HORIZONTAL;
     }
     SDL_Rect playerRect = { static_cast<int>(rect.x), static_cast<int>(rect.y),
@@ -38,17 +38,17 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playe
     double newY = rect.y;
 
     if (keystates[SDL_SCANCODE_UP]) {
-        newY -= playerSpeed;  // Przesuniêcie w górê
+        newY -= playerSpeed;  // PrzesuniÄ™cie w gÃ³rÄ™
     }
     if (keystates[SDL_SCANCODE_DOWN]) {
-        newY += playerSpeed;  // Przesuniêcie w dó³
+        newY += playerSpeed;  // PrzesuniÄ™cie w dÃ³Å‚
     }
     if (keystates[SDL_SCANCODE_LEFT]) {
-        newX -= playerSpeed;  // Przesuniêcie w lewo
+        newX -= playerSpeed;  // PrzesuniÄ™cie w lewo
         facingDirection = Direction::LEFT;
     }
     if (keystates[SDL_SCANCODE_RIGHT]) {
-        newX += playerSpeed;  // Przesuniêcie w prawo
+        newX += playerSpeed;  // PrzesuniÄ™cie w prawo
         facingDirection = Direction::RIGHT;
     }
 

@@ -2,7 +2,7 @@
 #include "weapons.h"
 
 Weapon::Weapon(SDL_Renderer* renderer, float x, float y, float w, float h)
-    : renderer(renderer), weaponDirection(WeaponDirection::RIGHT) {
+    : renderer(renderer), weaponDirection(WeaponDirection::LEFT) {
     rect.x = x;
     rect.y = y;
     rect.w = w;
@@ -23,7 +23,7 @@ void Weapon::setWeaponDirection(WeaponDirection direction) {
 
 void Weapon::drawWeapon(SDL_Renderer* renderer) {
     SDL_RendererFlip flip = SDL_FLIP_NONE;
-    if (weaponDirection == WeaponDirection::LEFT) {
+    if (weaponDirection == WeaponDirection::RIGHT) {
         flip = SDL_FLIP_HORIZONTAL;
     }
 
@@ -43,11 +43,11 @@ void Weapon::updatePosition(float playerX, float playerY, float playerW, float p
     }
 
     if (weaponDirection == WeaponDirection::LEFT) {
-        rect.x = playerX - playerW - 10;
+        rect.x = playerX - playerW - 20;
         rect.y = playerY + (playerH / 2) - 10;
     }
     else if (weaponDirection == WeaponDirection::RIGHT) {
-        rect.x = playerX + playerW - 10;
+        rect.x = playerX + playerW - 20;
         rect.y = playerY + (playerH / 2) - 10;
     }
 }
