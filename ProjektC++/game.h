@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <vector>
+
 #include "player.h"
 #include "enemy.h"
 #include "weapons.h"
@@ -24,10 +25,15 @@ private:
     void updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon);
     void renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render);
 
+    void renderCharacterSelectionScreen();
+    void handleCharacterSelectionEvents(bool& characterSelected);
+
     SDL_Window* window;
     SDL_Renderer* renderer;
+    GameState gameState;
 
     const int screenHeight;
     const int screenWidth;
-    GameState gameState;
+  
+    std::string selectedCharacter;
 };

@@ -12,11 +12,16 @@ float playerWidth = 50;
 float playerHeight = 50;
 float playerSpeed = 2;
 float enemySpeed = 1;
+float fireballSpeed = 0.5;
 
 int timeBetweenEnemies = 1000;
 int enemiesDefeted = 0;
 
 SDL_Texture* enemyTexture = nullptr;
+SDL_Texture* warriorTexture = nullptr;
+SDL_Texture* wizardTexture = nullptr;
+SDL_Texture* weaponWhipTexture = nullptr;
+SDL_Texture* weaponFireballTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
@@ -49,15 +54,82 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
         std::cerr << "Nie mozna zainicjowaæ SDL_Image: " << IMG_GetError() << "\n";
     }
 
+
     SDL_Surface* tmpSurface2 = IMG_Load("assets/enemy_bat.png");
     enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface2);
-    SDL_FreeSurface(tmpSurface2); 
+    SDL_FreeSurface(tmpSurface2);
+
+    SDL_Surface* tmpKnightSurface = IMG_Load("assets/player_warrior.png");
+    warriorTexture = SDL_CreateTextureFromSurface(renderer, tmpKnightSurface);
+    SDL_FreeSurface(tmpKnightSurface);
+
+    SDL_Surface* tmpWizardSurface = IMG_Load("assets/player_wizard.png");
+    wizardTexture = SDL_CreateTextureFromSurface(renderer, tmpWizardSurface);
+    SDL_FreeSurface(tmpWizardSurface);
+
+    SDL_Surface* tmpSurfaceWeapon1 = IMG_Load("assets/weapon_whip.png");
+    weaponWhipTexture = SDL_CreateTextureFromSurface(renderer, tmpSurfaceWeapon1);
+    SDL_FreeSurface(tmpSurfaceWeapon1);
+
+    SDL_Surface* tmpSurfaceWeapon2 = IMG_Load("assets/weapon_fireball.png");
+    weaponFireballTexture = SDL_CreateTextureFromSurface(renderer, tmpSurfaceWeapon2);
+    SDL_FreeSurface(tmpSurfaceWeapon2);
     
 }
 
 void Game::run() {
     init("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+    bool characterSelected = false;
+
+    while (!characterSelected) {
+        renderCharacterSelectionScreen();
+        handleCharacterSelectionEvents(characterSelected);
+    }
+
+    gameState = GameState::PLAY;
     gameLoop();
+}
+
+void Game::renderCharacterSelectionScreen() {
+    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
+    SDL_RenderClear(renderer);
+
+    SDL_Rect knightButton = { screenWidth/2 - 250, screenHeight/2 - 100, 200, 200 };
+    SDL_Rect wizardButton = { screenWidth/2 + 50, screenHeight/2 - 100, 200, 200 };
+
+    SDL_RenderCopy(renderer, warriorTexture, nullptr, &knightButton);
+    SDL_RenderCopy(renderer, wizardTexture, nullptr, &wizardButton);
+
+    SDL_RenderPresent(renderer);
+}
+
+void Game::handleCharacterSelectionEvents(bool& characterSelected) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
+            gameState = GameState::EXIT;
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            int mouseX, mouseY;
+            SDL_GetMouseState(&mouseX, &mouseY);
+
+            SDL_Rect knightButton = { screenWidth / 2 - 250, screenHeight / 2 - 100, 200, 200 };
+            if (mouseX >= knightButton.x && mouseX <= (knightButton.x + knightButton.w) &&
+                mouseY >= knightButton.y && mouseY <= (knightButton.y + knightButton.h)) {
+                selectedCharacter = "warrior";
+                characterSelected = true;
+            }
+
+            SDL_Rect wizardButton = { screenWidth / 2 + 50, screenHeight / 2 - 100, 200, 200 };
+            if (mouseX >= wizardButton.x && mouseX <= (wizardButton.x + wizardButton.w) &&
+                mouseY >= wizardButton.y && mouseY <= (wizardButton.y + wizardButton.h)) {
+                selectedCharacter = "wizard";
+                characterSelected = true;
+            }
+            break;
+        }
+    }
 }
 
 template<typename T>
@@ -169,14 +241,21 @@ void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapo
     // Logika aktualizacji gracza, wrogów, broni, kolizji itp.
     Sleep(10);
     player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
-    weapon.updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+
+    if (selectedCharacter == "warrior") {
+        weapon.updateWhipPosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+    }
+    else {
+        weapon.updateFireballPosition(fireballSpeed, player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+        //weapon.updateWhipPosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+    }
     generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies, enemiesDefeted, player.flag);
     updateEnemies(enemies, player.rect.x, player.rect.y);
 }
 
 void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render) {
     // Renderowanie i czyszczenie t³a
-    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 255);
+    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
 
     // Renderowanie interfejsu
@@ -186,7 +265,18 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
 
     // Renderowanie gracza, wrogów, broni.
     player.spawnPlayer();
-    weapon.drawWeapon(renderer);
+
+    if (selectedCharacter == "warrior") {
+        player.playerTexture = warriorTexture;
+        weapon.weaponTexture = weaponWhipTexture;
+        weapon.drawWhipWeapon(renderer);
+    }
+    else if (selectedCharacter == "wizard") {
+        player.playerTexture = wizardTexture;
+        weapon.weaponTexture = weaponFireballTexture;
+        //weapon.drawWhipWeapon(renderer);
+        weapon.drawFireballWeapon(weapon.fireballs, renderer);
+    }
     drawEnemies(enemies);
 
     // Wyœwietlanie na ekranie
@@ -196,8 +286,9 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
 void Game::gameLoop() {
     Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
     std::vector<Enemy> enemies;
-    Weapon weapon(renderer, player.rect.x + player.rect.w, (player.rect.y + player.rect.h) / 2, 80, 30);
+    Weapon weapon(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20);
     Render render(renderer, screenWidth, screenHeight);
+
 
     while (gameState != GameState::EXIT) {
         updateGameEntities(player, enemies, weapon);

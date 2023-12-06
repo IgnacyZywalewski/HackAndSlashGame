@@ -23,12 +23,13 @@ public:
     float getHealth() const { return health; }
     void reduceHealth(float damage) { health -= damage; }
 
+    SDL_Texture* playerTexture; 
     RectPlayer rect;
     Direction facingDirection;
     bool flag = false;
+    
 
 private:
     float health = 100.0f;
     SDL_Renderer* renderer;
-    SDL_Texture* playerTexture;
 };

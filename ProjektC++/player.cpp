@@ -11,10 +11,6 @@ Player::Player(SDL_Renderer* renderer, float x, float y, float w, float h)
     rect.y = y;
     rect.w = w;
     rect.h = h;
-
-    SDL_Surface* tmpSurface = IMG_Load("assets/player_warrior.png");
-    playerTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-    SDL_FreeSurface(tmpSurface);
 }
 
 Player::~Player() {
