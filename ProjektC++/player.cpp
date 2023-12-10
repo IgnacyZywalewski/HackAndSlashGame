@@ -6,7 +6,7 @@
 #include "weapons.h"
 
 Player::Player(SDL_Renderer* renderer, float x, float y, float w, float h)
-    : renderer(renderer), facingDirection(Direction::LEFT) {
+    : renderer(renderer), facingDirection(Direction::LEFT), playerTexture(nullptr) {
     rect.x = x;
     rect.y = y;
     rect.w = w;

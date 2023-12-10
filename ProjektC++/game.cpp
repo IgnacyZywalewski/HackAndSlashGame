@@ -12,10 +12,9 @@ float playerWidth = 50;
 float playerHeight = 50;
 float playerSpeed = 2;
 float enemySpeed = 1;
-float fireballSpeed = 0.5;
 
 int timeBetweenEnemies = 1000;
-int enemiesDefeted = 0;
+int enemiesDefeated = 0;
 
 SDL_Texture* enemyTexture = nullptr;
 SDL_Texture* warriorTexture = nullptr;
@@ -142,7 +141,6 @@ SDL_Rect convertToSDLRect(const T& rect) {
     return sdlRect;
 }
 
-
 void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& timeBetweenEnemies, int& enemiesDefeated, bool& difficultyIncreased) {
     static int lastEnemyTime = 0;
     int currentTime = SDL_GetTicks();
@@ -166,7 +164,6 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
         difficultyIncreased = false;
     }
 }
-
 
 void drawEnemies(std::vector<Enemy>& enemies) {
     for (Enemy& enemy : enemies) {
@@ -206,7 +203,7 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
             it->reduceHealth(weapon.getDamage());
             if (it->getHealth() <= 0) {
                 it = enemies.erase(it);
-                enemiesDefeted++;
+                enemiesDefeated++;
             }
             else {
                 ++it;
@@ -243,13 +240,19 @@ void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapo
     player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
 
     if (selectedCharacter == "warrior") {
-        weapon.updateWhipPosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+        Whip* whip = dynamic_cast<Whip*>(&weapon);
+        if (whip) {
+            whip->updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+        }
     }
-    else {
-        weapon.updateFireballPosition(fireballSpeed, player.rect.x, player.rect.y, player.rect.w, player.rect.h);
-        //weapon.updateWhipPosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+    else if (selectedCharacter == "wizard") {
+        Fireball* fireball = dynamic_cast<Fireball*>(&weapon);
+        if (fireball) {
+            fireball->updatePosition(player.rect.x, player.rect.y, player.rect.w, player.rect.h);
+        }
     }
-    generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies, enemiesDefeted, player.flag);
+
+    generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies, enemiesDefeated, player.flag);
     updateEnemies(enemies, player.rect.x, player.rect.y);
 }
 
@@ -260,7 +263,7 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
 
     // Renderowanie interfejsu
     render.renderHealth(player.getHealth());
-    render.renderScore(enemiesDefeted);
+    render.renderScore(enemiesDefeated);
     render.renderFPS();
 
     // Renderowanie gracza, wrogów, broni.
@@ -268,32 +271,46 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
 
     if (selectedCharacter == "warrior") {
         player.playerTexture = warriorTexture;
-        weapon.weaponTexture = weaponWhipTexture;
-        weapon.drawWhipWeapon(renderer);
+        Whip* whip = dynamic_cast<Whip*>(&weapon); // Sprawdzenie czy bron to Whip
+        if (whip) {
+            whip->weaponTexture = weaponWhipTexture;
+            whip->drawWeapon(renderer);
+        }
     }
     else if (selectedCharacter == "wizard") {
         player.playerTexture = wizardTexture;
-        weapon.weaponTexture = weaponFireballTexture;
-        //weapon.drawWhipWeapon(renderer);
-        weapon.drawFireballWeapon(weapon.fireballs, renderer);
+        Fireball* fireball = dynamic_cast<Fireball*>(&weapon); // Sprawdzenie czy bron to Fireball
+        if (fireball) {
+            fireball->weaponTexture = weaponFireballTexture;
+            fireball->drawWeapon(renderer);
+        }
     }
-    drawEnemies(enemies);
 
-    // Wyœwietlanie na ekranie
+    drawEnemies(enemies);
     SDL_RenderPresent(renderer);
 }
 
 void Game::gameLoop() {
     Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
     std::vector<Enemy> enemies;
-    Weapon weapon(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20);
     Render render(renderer, screenWidth, screenHeight);
 
+    // Tworzenie bronii w zale¿noœci od wybranej postaci
+    Weapon* weapon = nullptr;
+
+    if (selectedCharacter == "warrior") {
+        weapon = new Whip(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20);
+    }
+    else if (selectedCharacter == "wizard") {
+        weapon = new Fireball(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20);
+    }
 
     while (gameState != GameState::EXIT) {
-        updateGameEntities(player, enemies, weapon);
-        gameState = handleCollisions(enemies, player.rect, player, weapon);
-        renderGame(player, enemies, weapon, render);
+        updateGameEntities(player, enemies, *weapon);
+        gameState = handleCollisions(enemies, player.rect, player, *weapon);
+        renderGame(player, enemies, *weapon, render);
         handleEvents();
     }
+
+    delete weapon;
 }
