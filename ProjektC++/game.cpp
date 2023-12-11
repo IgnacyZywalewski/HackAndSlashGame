@@ -21,6 +21,7 @@ SDL_Texture* warriorTexture = nullptr;
 SDL_Texture* wizardTexture = nullptr;
 SDL_Texture* weaponWhipTexture = nullptr;
 SDL_Texture* weaponFireballTexture = nullptr;
+SDL_Texture* pauseButtonTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
@@ -66,13 +67,17 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     wizardTexture = SDL_CreateTextureFromSurface(renderer, tmpWizardSurface);
     SDL_FreeSurface(tmpWizardSurface);
 
-    SDL_Surface* tmpSurfaceWeapon1 = IMG_Load("assets/weapon_whip.png");
-    weaponWhipTexture = SDL_CreateTextureFromSurface(renderer, tmpSurfaceWeapon1);
-    SDL_FreeSurface(tmpSurfaceWeapon1);
+    SDL_Surface* tmpWhipSurface = IMG_Load("assets/weapon_whip.png");
+    weaponWhipTexture = SDL_CreateTextureFromSurface(renderer, tmpWhipSurface);
+    SDL_FreeSurface(tmpWhipSurface);
 
-    SDL_Surface* tmpSurfaceWeapon2 = IMG_Load("assets/weapon_fireball.png");
-    weaponFireballTexture = SDL_CreateTextureFromSurface(renderer, tmpSurfaceWeapon2);
-    SDL_FreeSurface(tmpSurfaceWeapon2);
+    SDL_Surface* tmpFireballSurface = IMG_Load("assets/weapon_fireball.png");
+    weaponFireballTexture = SDL_CreateTextureFromSurface(renderer, tmpFireballSurface);
+    SDL_FreeSurface(tmpFireballSurface);
+
+    SDL_Surface* tmpPauseSurface = IMG_Load("assets/pause_button.png");
+    pauseButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpPauseSurface);
+    SDL_FreeSurface(tmpPauseSurface);
     
 }
 
@@ -218,22 +223,29 @@ GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Play
 
 void Game::handleEvents() {
     SDL_Event event;
-    SDL_PollEvent(&event);
-
-    switch (event.type) {
-    case SDL_QUIT:
-        gameState = GameState::EXIT;
-        break;
-    case SDL_KEYDOWN:
-        switch (event.key.keysym.sym) {
-        case SDLK_ESCAPE:
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
             gameState = GameState::EXIT;
             break;
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym) {
+            case SDLK_ESCAPE:
+                gameState = GameState::EXIT;
+                break;
+            }
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            int mouseX, mouseY;
+            SDL_GetMouseState(&mouseX, &mouseY);
+
+            if (mouseX >= screenWidth - 60 && mouseX <= screenWidth && mouseY >= 10 && mouseY <= 90) {
+                isGamePaused = !isGamePaused;
+            }
+            break;
         }
-        break;
     }
 }
-
 void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon) {
     // Logika aktualizacji gracza, wrogów, broni, kolizji itp.
     Sleep(10);
@@ -265,13 +277,13 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
     render.renderHealth(player.getHealth());
     render.renderScore(enemiesDefeated);
     render.renderFPS();
+    render.renderPauseButton(pauseButtonTexture);
 
     // Renderowanie gracza, wrogów, broni.
     player.spawnPlayer();
-
     if (selectedCharacter == "warrior") {
         player.playerTexture = warriorTexture;
-        Whip* whip = dynamic_cast<Whip*>(&weapon); // Sprawdzenie czy bron to Whip
+        Whip* whip = dynamic_cast<Whip*>(&weapon);
         if (whip) {
             whip->weaponTexture = weaponWhipTexture;
             whip->drawWeapon(renderer);
@@ -279,7 +291,7 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
     }
     else if (selectedCharacter == "wizard") {
         player.playerTexture = wizardTexture;
-        Fireball* fireball = dynamic_cast<Fireball*>(&weapon); // Sprawdzenie czy bron to Fireball
+        Fireball* fireball = dynamic_cast<Fireball*>(&weapon);
         if (fireball) {
             fireball->weaponTexture = weaponFireballTexture;
             fireball->drawWeapon(renderer);
@@ -295,21 +307,25 @@ void Game::gameLoop() {
     std::vector<Enemy> enemies;
     Render render(renderer, screenWidth, screenHeight);
 
-    // Tworzenie bronii w zale¿noœci od wybranej postaci
+    // Tworzenie broni w zale¿noœci od wybranej postaci
     Weapon* weapon = nullptr;
 
     if (selectedCharacter == "warrior") {
         weapon = new Whip(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20);
     }
     else if (selectedCharacter == "wizard") {
-        weapon = new Fireball(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20);
+        weapon = new Fireball(renderer, 0, 0, 0, 0);
     }
 
     while (gameState != GameState::EXIT) {
-        updateGameEntities(player, enemies, *weapon);
-        gameState = handleCollisions(enemies, player.rect, player, *weapon);
-        renderGame(player, enemies, *weapon, render);
         handleEvents();
+
+        if (!isGamePaused) {
+            updateGameEntities(player, enemies, *weapon);
+            gameState = handleCollisions(enemies, player.rect, player, *weapon);
+        }
+
+        renderGame(player, enemies, *weapon, render);
     }
 
     delete weapon;

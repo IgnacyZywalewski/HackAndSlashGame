@@ -36,4 +36,6 @@ private:
     const int screenWidth;
   
     std::string selectedCharacter;
+
+    bool isGamePaused = false;
 };

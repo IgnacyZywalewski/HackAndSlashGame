@@ -12,11 +12,13 @@ public:
     void renderHealth(int health);
     void renderScore(int score);
     void renderFPS();
+    void renderPauseButton(SDL_Texture* pauseTexture);
 
 private:
     SDL_Renderer* renderer;
     SDL_Color textColor;
     TTF_Font* font;
+
     int screenWidth;
     int screenHeight;
 };

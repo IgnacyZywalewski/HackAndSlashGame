@@ -55,6 +55,6 @@ public:
     void createNewFireball(float playerX, float playerY, float playerW, float playerH);
 
     std::vector<Fireball> fireballs;
-    float fireballSpeed = 2.0f;
+    float fireballSpeed = 3.0f;
     float timeBetweenShoot = 2000;
 };
