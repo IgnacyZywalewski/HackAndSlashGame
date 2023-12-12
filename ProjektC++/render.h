@@ -14,6 +14,9 @@ public:
     void renderFPS();
     void renderPauseButton(SDL_Texture* pauseTexture);
 
+    void renderStartScreen();
+    void renderCharacterSelectionScreen( SDL_Texture* warriorTexture, SDL_Texture* wizardTexture);
+
 private:
     SDL_Renderer* renderer;
     SDL_Color textColor;

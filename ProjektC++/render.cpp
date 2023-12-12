@@ -73,3 +73,50 @@ void Render::renderPauseButton(SDL_Texture* pauseTexture) {
 
     SDL_RenderCopy(renderer, pauseTexture, nullptr, &pauseButtonRect);
 }
+
+void Render::renderStartScreen() {
+    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
+    SDL_RenderClear(renderer);
+
+    SDL_Rect startButton = { screenWidth / 2 - 100, screenHeight / 2 - 70, 200, 50 };
+    SDL_Rect exitButton = { screenWidth / 2 - 100, screenHeight / 2 + 30, 200, 50 };
+
+    SDL_SetRenderDrawColor(renderer, 36, 36, 36, 36);
+    SDL_RenderFillRect(renderer, &startButton);
+    SDL_RenderFillRect(renderer, &exitButton);
+
+
+    SDL_Color textColor = { 255, 255, 255, 255 };
+
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Start", textColor);
+    SDL_Texture* textStart = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    SDL_Rect startTextRect = { screenWidth / 2 - 40, screenHeight / 2 - 55, 80, 25 };
+
+    SDL_RenderCopy(renderer, textStart, nullptr, &startTextRect);
+    surfaceMessage = TTF_RenderText_Solid(font, "Exit", textColor);
+    SDL_Texture* textExit = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+
+    SDL_Rect exitTextRect = { screenWidth / 2 - 30, screenHeight / 2 + 45, 60, 25 };
+    SDL_RenderCopy(renderer, textExit, nullptr, &exitTextRect);
+
+    SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(textStart);
+    SDL_DestroyTexture(textExit);
+
+    SDL_RenderPresent(renderer);
+}
+
+
+void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Texture* wizardTexture) {
+    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
+    SDL_RenderClear(renderer);
+
+    SDL_Rect knightButton = { screenWidth / 2 - 250, screenHeight / 2 - 100, 200, 200 };
+    SDL_Rect wizardButton = { screenWidth / 2 + 50, screenHeight / 2 - 100, 200, 200 };
+
+    SDL_RenderCopy(renderer, warriorTexture, nullptr, &knightButton);
+    SDL_RenderCopy(renderer, wizardTexture, nullptr, &wizardButton);
+
+    SDL_RenderPresent(renderer);
+}

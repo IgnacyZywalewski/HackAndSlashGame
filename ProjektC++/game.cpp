@@ -1,6 +1,9 @@
+#include <iostream>
 #include <windows.h>
 #include <vector>
+#include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include "game.h"
 #include "player.h"
@@ -22,6 +25,8 @@ SDL_Texture* wizardTexture = nullptr;
 SDL_Texture* weaponWhipTexture = nullptr;
 SDL_Texture* weaponFireballTexture = nullptr;
 SDL_Texture* pauseButtonTexture = nullptr;
+SDL_Texture* startButtonTexture = nullptr;
+SDL_Texture* exitButtonTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
@@ -31,6 +36,7 @@ Game::~Game() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -79,32 +85,41 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     pauseButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpPauseSurface);
     SDL_FreeSurface(tmpPauseSurface);
     
+    SDL_Surface* tmpStartSurface = IMG_Load("assets/start_button.png");
+    startButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpStartSurface);
+    SDL_FreeSurface(tmpStartSurface);
+
+    SDL_Surface* tmpExitSurface = IMG_Load("assets/exit_button.png");
+    exitButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpExitSurface);
+    SDL_FreeSurface(tmpExitSurface);
+
 }
 
-void Game::run() {
-    init("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
-    bool characterSelected = false;
+void Game::handleStartScreenEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
+            gameState = GameState::EXIT;
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            int mouseX, mouseY;
+            SDL_GetMouseState(&mouseX, &mouseY);
 
-    while (!characterSelected) {
-        renderCharacterSelectionScreen();
-        handleCharacterSelectionEvents(characterSelected);
+            SDL_Rect startButton = { screenWidth / 2 - 100, screenHeight / 2 - 70, 200, 50 };
+            if (mouseX >= startButton.x && mouseX <= (startButton.x + startButton.w) &&
+                mouseY >= startButton.y && mouseY <= (startButton.y + startButton.h)) {
+                startGame = true;
+            }
+
+            SDL_Rect exitButton = { screenWidth / 2 - 100, screenHeight / 2 + 30, 200, 50 };
+            if (mouseX >= exitButton.x && mouseX <= (exitButton.x + exitButton.w) &&
+                mouseY >= exitButton.y && mouseY <= (exitButton.y + exitButton.h)) {
+                quitGame = true;
+            }
+            break;
+        }
     }
-
-    gameState = GameState::PLAY;
-    gameLoop();
-}
-
-void Game::renderCharacterSelectionScreen() {
-    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
-    SDL_RenderClear(renderer);
-
-    SDL_Rect knightButton = { screenWidth/2 - 250, screenHeight/2 - 100, 200, 200 };
-    SDL_Rect wizardButton = { screenWidth/2 + 50, screenHeight/2 - 100, 200, 200 };
-
-    SDL_RenderCopy(renderer, warriorTexture, nullptr, &knightButton);
-    SDL_RenderCopy(renderer, wizardTexture, nullptr, &wizardButton);
-
-    SDL_RenderPresent(renderer);
 }
 
 void Game::handleCharacterSelectionEvents(bool& characterSelected) {
@@ -133,6 +148,31 @@ void Game::handleCharacterSelectionEvents(bool& characterSelected) {
             }
             break;
         }
+    }
+}
+
+void Game::run() {
+    init("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+
+    Render render(renderer, screenWidth, screenHeight);
+
+    while (!startGame && !quitGame) {
+        render.renderStartScreen();
+        handleStartScreenEvents();
+
+        if (startGame) {
+            while (!characterSelected) {
+                render.renderCharacterSelectionScreen(warriorTexture, wizardTexture);
+                handleCharacterSelectionEvents(characterSelected);
+            }
+
+            gameState = GameState::PLAY;
+            gameLoop();
+        }
+    }
+
+    if (quitGame) {
+        gameState = GameState::EXIT;
     }
 }
 
@@ -246,6 +286,7 @@ void Game::handleEvents() {
         }
     }
 }
+
 void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon) {
     // Logika aktualizacji gracza, wrogów, broni, kolizji itp.
     Sleep(10);
@@ -310,12 +351,8 @@ void Game::gameLoop() {
     // Tworzenie broni w zale¿noœci od wybranej postaci
     Weapon* weapon = nullptr;
 
-    if (selectedCharacter == "warrior") {
-        weapon = new Whip(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20);
-    }
-    else if (selectedCharacter == "wizard") {
-        weapon = new Fireball(renderer, 0, 0, 0, 0);
-    }
+    if (selectedCharacter == "warrior") { weapon = new Whip(renderer, player.rect.x + player.rect.w - 120, player.rect.y + (player.rect.h / 2) - 20, 80, 20); }
+    else if (selectedCharacter == "wizard") { weapon = new Fireball(renderer, 0, 0, 0, 0); }
 
     while (gameState != GameState::EXIT) {
         handleEvents();
