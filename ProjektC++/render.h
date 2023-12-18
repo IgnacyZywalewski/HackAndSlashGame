@@ -16,6 +16,7 @@ public:
 
     void renderStartScreen();
     void renderCharacterSelectionScreen( SDL_Texture* warriorTexture, SDL_Texture* wizardTexture);
+    void renderEndGameScreen();
 
 private:
     SDL_Renderer* renderer;
