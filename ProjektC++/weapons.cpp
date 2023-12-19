@@ -130,4 +130,3 @@ void Fireball::updatePosition(float playerX, float playerY, float playerW, float
         }
     }
 }
-

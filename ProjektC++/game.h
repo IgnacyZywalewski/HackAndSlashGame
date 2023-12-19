@@ -9,7 +9,7 @@
 #include "weapons.h"
 #include "render.h"
 
-enum class GameState { PLAY, EXIT, END, START_SCREEN};
+enum class GameState { PLAY, EXIT, END, START_SCREEN };
 
 class Game {
 public:
@@ -38,7 +38,7 @@ private:
 
     const int screenHeight;
     const int screenWidth;
-  
+
     std::string selectedCharacter;
 
     bool isGamePaused = false;

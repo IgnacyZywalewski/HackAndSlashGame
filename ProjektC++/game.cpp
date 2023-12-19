@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <windows.h>
 #include <vector>
 #include <SDL.h>
@@ -41,7 +41,7 @@ Game::~Game() {
 
 void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cerr << "Nie uda³o siê zainicjowaæ SDL: " << SDL_GetError() << "\n";
+        std::cerr << "Nie udaï¿½o siï¿½ zainicjowaï¿½ SDL: " << SDL_GetError() << "\n";
     }
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
@@ -56,7 +56,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 
     int imgFlags = IMG_INIT_PNG;
     if (!(IMG_Init(imgFlags) & imgFlags)) {
-        std::cerr << "Nie mozna zainicjowaæ SDL_Image: " << IMG_GetError() << "\n";
+        std::cerr << "Nie mozna zainicjowaï¿½ SDL_Image: " << IMG_GetError() << "\n";
     }
 
 }
@@ -193,7 +193,6 @@ void Game::handleEndGameEvents() {
     }
 }
 
-
 void Game::run() {
     init("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 
@@ -246,7 +245,6 @@ void Game::run() {
     }
 }
 
-
 template<typename T>
 SDL_Rect convertToSDLRect(const T& rect) {
     SDL_Rect sdlRect;
@@ -270,8 +268,8 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
     }
 
     if (enemiesDefeated % 10 == 0 && enemiesDefeated > 0 && !difficultyIncreased) {
-        if (timeBetweenEnemies > 100) { 
-            timeBetweenEnemies -= 50;   
+        if (timeBetweenEnemies > 100) {
+            timeBetweenEnemies -= 50;
             difficultyIncreased = true;
         }
     }
@@ -292,9 +290,9 @@ void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
         enemy.updateEnemyPosition(playerX, playerY, enemySpeed);
     }
 }
- 
+
 bool checkCollision(SDL_Rect rectA, SDL_Rect rectB) {
-    if(SDL_HasIntersection(&rectA, &rectB)) return true;
+    if (SDL_HasIntersection(&rectA, &rectB)) return true;
     return false;
 }
 
@@ -315,18 +313,45 @@ GameState Game::handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player
             it->isStopped = false;
         }
 
-        if (checkCollision(weaponRect, enemyRect)) {
-            it->reduceHealth(weapon.getDamage());
-            if (it->getHealth() <= 0) {
-                it = enemies.erase(it);
-                enemiesDefeated++;
+        if (selectedCharacter == "warrior") {
+            if (checkCollision(weaponRect, enemyRect)) {
+                it->reduceHealth(weapon.getDamage());
+                if (it->getHealth() <= 0) {
+                    it = enemies.erase(it);
+                    enemiesDefeated++;
+                }
+                else {
+                    ++it;
+                }
             }
             else {
                 ++it;
             }
         }
-        else {
-            ++it;
+        else if (selectedCharacter == "wizard") {
+            Fireball* fireball = dynamic_cast<Fireball*>(&weapon);
+            bool enemyHit = false;
+
+            for (auto& fb : fireball->fireballs) {
+                SDL_Rect fireballRect = convertToSDLRect(fb.rect);
+
+                if (checkCollision(fireballRect, enemyRect)) {
+                    it->reduceHealth(fireball->getDamage());
+                    enemyHit = true;
+
+                    if (it->getHealth() <= 0) {
+                        it = enemies.erase(it);
+                        enemiesDefeated++;
+                    }
+                    else {
+                        ++it;
+                    }
+                }
+            }
+
+            if (!enemyHit) {
+                ++it;
+            }
         }
     }
     return GameState::PLAY;
@@ -343,6 +368,7 @@ void Game::handleEvents() {
             switch (event.key.keysym.sym) {
             case SDLK_ESCAPE:
                 gameState = GameState::EXIT;
+                quitGame = true;
                 break;
             }
             break;
@@ -359,7 +385,7 @@ void Game::handleEvents() {
 }
 
 void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon) {
-    // Logika aktualizacji gracza, wrogów, broni, kolizji itp.
+    // Logika aktualizacji gracza, wrogï¿½w, broni, kolizji itp.
     Sleep(10);
     player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
 
@@ -381,7 +407,7 @@ void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapo
 }
 
 void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render) {
-    // Renderowanie i czyszczenie t³a
+    // Renderowanie i czyszczenie tï¿½a
     SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
 
@@ -391,7 +417,7 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
     render.renderFPS();
     render.renderPauseButton(pauseButtonTexture);
 
-    // Renderowanie gracza, wrogów, broni.
+    // Renderowanie gracza, wrogï¿½w, broni.
     player.spawnPlayer();
     if (selectedCharacter == "warrior") {
         player.playerTexture = warriorTexture;
