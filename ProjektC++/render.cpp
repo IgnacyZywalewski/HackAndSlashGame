@@ -105,7 +105,6 @@ void Render::renderStartScreen() {
     SDL_RenderPresent(renderer);
 }
 
-
 void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Texture* wizardTexture) {
     SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
@@ -119,7 +118,7 @@ void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Tex
     SDL_RenderPresent(renderer);
 }
 
-void Render::renderEndGameScreen() {
+void Render::renderEndGameScreen(int enemiesDefeated) {
     SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
 
@@ -132,9 +131,18 @@ void Render::renderEndGameScreen() {
     SDL_RenderFillRect(renderer, &characterSelectionButton);
     SDL_RenderFillRect(renderer, &exitButton);
 
-    SDL_Color textColor = { 255, 255, 255, 255 };
 
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Replay", textColor);
+    std::string scoreText = "Your score: " + std::to_string(enemiesDefeated);
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
+    SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+    SDL_Rect scoreTextRect = { (screenWidth / 2) - 150, screenHeight - 600, 300, 50 };
+    SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreTextRect);
+
+
+    textColor = { 255, 255, 255, 255 };
+
+    surfaceMessage = TTF_RenderText_Solid(font, "Replay", textColor);
     SDL_Texture* textStart = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
     SDL_Rect startTextRect = { screenWidth / 2 - 40, screenHeight / 2 - 85, 80, 25 };
     SDL_RenderCopy(renderer, textStart, nullptr, &startTextRect);

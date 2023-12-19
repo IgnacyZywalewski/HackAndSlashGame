@@ -215,7 +215,7 @@ void Game::run() {
                 }
 
                 if (gameState == GameState::END) {
-                    render.renderEndGameScreen();
+                    render.renderEndGameScreen(enemiesDefeated);
 
                     bool endGameHandled = false;
                     while (!endGameHandled) {

@@ -16,7 +16,7 @@ public:
 
     void renderStartScreen();
     void renderCharacterSelectionScreen( SDL_Texture* warriorTexture, SDL_Texture* wizardTexture);
-    void renderEndGameScreen();
+    void renderEndGameScreen(int enemiesDefeated);
 
 private:
     SDL_Renderer* renderer;
