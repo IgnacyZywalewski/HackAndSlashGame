@@ -24,9 +24,9 @@ public:
     RectEnemy rect;
 
 private:
-    float damage = 0.017f; // 1 damage co 1 sekundê
+    float damage = 0.017f; // 1 damage co 1 sekundê 
     float health = 20.0f;
-    float enemySpeed = 1;
     SDL_Renderer* renderer;
     SDL_Texture* enemyTexture;
 };
+                      

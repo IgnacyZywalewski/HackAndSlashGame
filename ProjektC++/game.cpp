@@ -62,9 +62,9 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 }
 
 void Game::loadTextures() {
-    SDL_Surface* tmpSurface2 = IMG_Load("assets/enemy_bat.png");
-    enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpSurface2);
-    SDL_FreeSurface(tmpSurface2);
+    SDL_Surface* tmpbatSurface = IMG_Load("assets/enemy_bat.png");
+    enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpbatSurface);
+    SDL_FreeSurface(tmpbatSurface);
 
     SDL_Surface* tmpKnightSurface = IMG_Load("assets/player_warrior.png");
     warriorTexture = SDL_CreateTextureFromSurface(renderer, tmpKnightSurface);
@@ -106,13 +106,13 @@ void Game::handleStartScreenEvents() {
             int mouseX, mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
 
-            SDL_Rect startButton = { screenWidth / 2 - 100, screenHeight / 2 - 70, 200, 50 };
+            SDL_Rect startButton = { screenWidth / 2 - 120, screenHeight / 2 - 70, 240, 70 };
             if (mouseX >= startButton.x && mouseX <= (startButton.x + startButton.w) &&
                 mouseY >= startButton.y && mouseY <= (startButton.y + startButton.h)) {
                 startGame = true;
             }
 
-            SDL_Rect exitButton = { screenWidth / 2 - 100, screenHeight / 2 + 30, 200, 50 };
+            SDL_Rect exitButton = { screenWidth / 2 - 120, screenHeight / 2 + 30, 240, 70 };
             if (mouseX >= exitButton.x && mouseX <= (exitButton.x + exitButton.w) &&
                 mouseY >= exitButton.y && mouseY <= (exitButton.y + exitButton.h)) {
                 quitGame = true;
@@ -136,14 +136,14 @@ void Game::handleCharacterSelectionEvents(bool& characterSelected) {
             int mouseX, mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
 
-            SDL_Rect knightButton = { screenWidth / 2 - 250, screenHeight / 2 - 100, 200, 200 };
+            SDL_Rect knightButton = { screenWidth / 2 - 270, screenHeight / 2 - 140, 240, 280 };
             if (mouseX >= knightButton.x && mouseX <= (knightButton.x + knightButton.w) &&
                 mouseY >= knightButton.y && mouseY <= (knightButton.y + knightButton.h)) {
                 selectedCharacter = "warrior";
                 characterSelected = true;
             }
 
-            SDL_Rect wizardButton = { screenWidth / 2 + 50, screenHeight / 2 - 100, 200, 200 };
+            SDL_Rect wizardButton = { screenWidth / 2 + 30, screenHeight / 2 - 140, 240, 280 };
             if (mouseX >= wizardButton.x && mouseX <= (wizardButton.x + wizardButton.w) &&
                 mouseY >= wizardButton.y && mouseY <= (wizardButton.y + wizardButton.h)) {
                 selectedCharacter = "wizard";
@@ -165,9 +165,9 @@ void Game::handleEndGameEvents() {
             int mouseX, mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
 
-            SDL_Rect restartButton = { screenWidth / 2 - 100, screenHeight / 2 - 100, 200, 50 };
-            SDL_Rect characterSelectionButton = { screenWidth / 2 - 100, screenHeight / 2 - 30, 200, 50 };
-            SDL_Rect exitButton = { screenWidth / 2 - 100, screenHeight / 2 + 40, 200, 50 };
+            SDL_Rect restartButton = { screenWidth / 2 - 125, screenHeight / 2 - 100, 250, 50 };
+            SDL_Rect characterSelectionButton = { screenWidth / 2 - 125, screenHeight / 2 - 30, 250, 50 };
+            SDL_Rect exitButton = { screenWidth / 2 - 125, screenHeight / 2 + 40, 250, 50 };
 
             if (mouseX >= restartButton.x && mouseX <= (restartButton.x + restartButton.w) &&
                 mouseY >= restartButton.y && mouseY <= (restartButton.y + restartButton.h)) {
@@ -408,8 +408,8 @@ void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapo
 
 void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render) {
     // Renderowanie i czyszczenie t�a
-    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, render.gameScreenTexture, nullptr, nullptr);
 
     // Renderowanie interfejsu
     render.renderHealth(player.getHealth());

@@ -1,4 +1,5 @@
 #include <SDL_ttf.h>
+#include <SDL_image.h>
 #include <iostream>
 
 #include "render.h"
@@ -11,6 +12,23 @@ Render::Render(SDL_Renderer* renderer, int screenWidth, int screenHeight)
 
     font = TTF_OpenFont("assets/HeadlinerNo45.ttf", 36);
     textColor = { 36, 36, 36 };
+
+    SDL_Surface* tmpScreenSurface = IMG_Load("assets/start_screen.png");
+    screenTexture = SDL_CreateTextureFromSurface(renderer, tmpScreenSurface);
+    SDL_FreeSurface(tmpScreenSurface);
+
+    SDL_Surface* tmpButtonSurface = IMG_Load("assets/button.png");
+    buttonTexture = SDL_CreateTextureFromSurface(renderer, tmpButtonSurface);
+    SDL_FreeSurface(tmpButtonSurface);
+
+    SDL_Surface* tmpGameScreenSurface = IMG_Load("assets/game_screen.png");
+    gameScreenTexture = SDL_CreateTextureFromSurface(renderer, tmpGameScreenSurface);
+    SDL_FreeSurface(tmpGameScreenSurface);
+
+    SDL_Surface* tmpFrameSurface = IMG_Load("assets/frame.png");
+    frameTexture = SDL_CreateTextureFromSurface(renderer, tmpFrameSurface);
+    SDL_FreeSurface(tmpFrameSurface);
+
 }
 
 Render::~Render() {
@@ -30,7 +48,7 @@ void Render::renderHealth(int health) {
 }
 
 void Render::renderScore(int score) {
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, ("Score : " + std::to_string(score)).c_str(), textColor); 
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, ("Score : " + std::to_string(score)).c_str(), textColor);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
     SDL_Rect textRect = { 10, 45, textSurface->w, textSurface->h };
@@ -75,27 +93,25 @@ void Render::renderPauseButton(SDL_Texture* pauseTexture) {
 }
 
 void Render::renderStartScreen() {
-    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
 
-    SDL_Rect startButton = { screenWidth / 2 - 100, screenHeight / 2 - 70, 200, 50 };
-    SDL_Rect exitButton = { screenWidth / 2 - 100, screenHeight / 2 + 30, 200, 50 };
+    SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 
-    SDL_SetRenderDrawColor(renderer, 36, 36, 36, 36);
-    SDL_RenderFillRect(renderer, &startButton);
-    SDL_RenderFillRect(renderer, &exitButton);
+    SDL_Rect startButton = { screenWidth / 2 - 120, screenHeight / 2 - 70, 240, 70 };
+    SDL_Rect exitButton = { screenWidth / 2 - 120, screenHeight / 2 + 30, 240, 70 };
 
-    SDL_Color textColor = { 255, 255, 255, 255 };
+    SDL_RenderCopy(renderer, buttonTexture, nullptr, &startButton);
+    SDL_RenderCopy(renderer, buttonTexture, nullptr, &exitButton);
 
     SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Start", textColor);
     SDL_Texture* textStart = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-    SDL_Rect startTextRect = { screenWidth / 2 - 40, screenHeight / 2 - 55, 80, 25 };
+    SDL_Rect startTextRect = { screenWidth / 2 - 50, screenHeight / 2 - 50, 100, 35 };
     SDL_RenderCopy(renderer, textStart, nullptr, &startTextRect);
 
 
     surfaceMessage = TTF_RenderText_Solid(font, "Exit", textColor);
     SDL_Texture* textExit = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-    SDL_Rect exitTextRect = { screenWidth / 2 - 30, screenHeight / 2 + 45, 60, 25 };
+    SDL_Rect exitTextRect = { screenWidth / 2 - 40, screenHeight / 2 + 50, 80, 35 };
     SDL_RenderCopy(renderer, textExit, nullptr, &exitTextRect);
 
     SDL_FreeSurface(surfaceMessage);
@@ -106,8 +122,19 @@ void Render::renderStartScreen() {
 }
 
 void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Texture* wizardTexture) {
-    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
+
+    SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
+
+    SDL_Rect knightBackground = { screenWidth / 2 - 290, screenHeight / 2 - 160, 280, 320 };
+    SDL_Rect wizardBackground = { screenWidth / 2 + 10, screenHeight / 2 - 160, 280, 320 };
+
+    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
+    SDL_RenderFillRect(renderer, &knightBackground);
+    SDL_RenderFillRect(renderer, &wizardBackground);
+
+    SDL_RenderCopy(renderer, frameTexture, nullptr, &knightBackground);
+    SDL_RenderCopy(renderer, frameTexture, nullptr, &wizardBackground);
 
     SDL_Rect knightButton = { screenWidth / 2 - 250, screenHeight / 2 - 100, 200, 200 };
     SDL_Rect wizardButton = { screenWidth / 2 + 50, screenHeight / 2 - 100, 200, 200 };
@@ -119,43 +146,42 @@ void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Tex
 }
 
 void Render::renderEndGameScreen(int enemiesDefeated) {
-    SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderClear(renderer);
 
-    SDL_Rect restartButton = { screenWidth / 2 - 100, screenHeight / 2 - 100, 200, 50 };
-    SDL_Rect characterSelectionButton = { screenWidth / 2 - 100, screenHeight / 2 - 30, 200, 50 };
-    SDL_Rect exitButton = { screenWidth / 2 - 100, screenHeight / 2 + 40, 200, 50 };
+    SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 
-    SDL_SetRenderDrawColor(renderer, 36, 36, 36, 36);
-    SDL_RenderFillRect(renderer, &restartButton);
-    SDL_RenderFillRect(renderer, &characterSelectionButton);
-    SDL_RenderFillRect(renderer, &exitButton);
+    SDL_Rect restartButton = { screenWidth / 2 - 125, screenHeight / 2 - 110, 250, 70 };
+    SDL_Rect characterSelectionButton = { screenWidth / 2 - 125, screenHeight / 2 - 30, 250, 70 };
+    SDL_Rect exitButton = { screenWidth / 2 - 125, screenHeight / 2 + 50, 250, 70 };
+
+    SDL_RenderCopy(renderer, buttonTexture, nullptr, &restartButton);
+    SDL_RenderCopy(renderer, buttonTexture, nullptr, &characterSelectionButton);
+    SDL_RenderCopy(renderer, buttonTexture, nullptr, &exitButton);
 
 
     std::string scoreText = "Your score: " + std::to_string(enemiesDefeated);
     SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
     SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
-    SDL_Rect scoreTextRect = { (screenWidth / 2) - 150, screenHeight - 600, 300, 50 };
+    SDL_Rect scoreTextRect = { screenWidth / 2 - 150, screenHeight - 600, 300, 50 };
     SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreTextRect);
 
 
-    textColor = { 255, 255, 255, 255 };
-
     surfaceMessage = TTF_RenderText_Solid(font, "Replay", textColor);
     SDL_Texture* textStart = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-    SDL_Rect startTextRect = { screenWidth / 2 - 40, screenHeight / 2 - 85, 80, 25 };
+    SDL_Rect startTextRect = { screenWidth / 2 - 45, screenHeight / 2 - 90, 90, 35 };
     SDL_RenderCopy(renderer, textStart, nullptr, &startTextRect);
 
-    surfaceMessage = TTF_RenderText_Solid(font, "Choose chrackter", textColor);
+    surfaceMessage = TTF_RenderText_Solid(font, "Choose charckter", textColor);
     SDL_Texture* textCharckter = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-    SDL_Rect charTextRect = { screenWidth / 2 - 95, screenHeight / 2 - 15, 190, 25 };
+    SDL_Rect charTextRect = { screenWidth / 2 - 93, screenHeight / 2 - 10, 190, 35 };
     SDL_RenderCopy(renderer, textCharckter, nullptr, &charTextRect);
 
     surfaceMessage = TTF_RenderText_Solid(font, "Exit", textColor);
     SDL_Texture* textExit = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-    SDL_Rect exitTextRect = { screenWidth / 2 - 30, screenHeight / 2 + 55, 60, 25 };
+    SDL_Rect exitTextRect = { screenWidth / 2 - 35, screenHeight / 2 + 70, 70, 35 };
     SDL_RenderCopy(renderer, textExit, nullptr, &exitTextRect);
+
 
     SDL_FreeSurface(surfaceMessage);
     SDL_DestroyTexture(textStart);

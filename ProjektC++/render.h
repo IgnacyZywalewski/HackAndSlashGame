@@ -18,10 +18,16 @@ public:
     void renderCharacterSelectionScreen( SDL_Texture* warriorTexture, SDL_Texture* wizardTexture);
     void renderEndGameScreen(int enemiesDefeated);
 
+    SDL_Texture* gameScreenTexture = nullptr;
+
 private:
     SDL_Renderer* renderer;
     SDL_Color textColor;
     TTF_Font* font;
+
+    SDL_Texture* screenTexture = nullptr;
+    SDL_Texture* buttonTexture = nullptr;
+    SDL_Texture* frameTexture = nullptr;
 
     int screenWidth;
     int screenHeight;

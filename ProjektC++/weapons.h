@@ -53,7 +53,6 @@ public:
     void drawWeapon(SDL_Renderer* renderer) override;
     void updatePosition(float playerX, float playerY, float playerW, float playerH) override;
     void createNewFireball(float playerX, float playerY, float playerW, float playerH);
-    //void handleCollision(std::vector<Enemy>& enemies, Weapon& weapon, int& enemiesDefeated);
 
     std::vector<Fireball> fireballs;
     float fireballSpeed = 3.0f;

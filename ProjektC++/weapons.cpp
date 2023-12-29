@@ -121,12 +121,25 @@ void Fireball::createNewFireball(float playerX, float playerY, float playerW, fl
 void Fireball::updatePosition(float playerX, float playerY, float playerW, float playerH) {
     createNewFireball(playerX, playerY, playerW, playerH);
 
-    for (auto& fireball : fireballs) {
-        if (fireball.weaponDirection == WeaponDirection::LEFT) {
-            fireball.rect.x -= fireballSpeed;
+    for (auto it = fireballs.begin(); it != fireballs.end();) {
+        if (it->weaponDirection == WeaponDirection::LEFT) {
+            it->rect.x -= fireballSpeed;
+            if (it->rect.x + it->rect.w < 0) {
+                it = fireballs.erase(it);
+            }
+            else {
+                ++it;
+            }
         }
-        else if (fireball.weaponDirection == WeaponDirection::RIGHT) {
-            fireball.rect.x += fireballSpeed;
+        else if (it->weaponDirection == WeaponDirection::RIGHT) {
+            it->rect.x += fireballSpeed;
+            if (it->rect.x > 1360) {
+                it = fireballs.erase(it);
+            }
+            else {
+                ++it;
+            }
         }
     }
 }
+
