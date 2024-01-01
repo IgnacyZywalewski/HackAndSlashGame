@@ -124,23 +124,53 @@ void Render::renderStartScreen() {
 void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Texture* wizardTexture) {
     SDL_RenderClear(renderer);
 
+    //tekstura t³a
     SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 
+    //napis na górze
+    std::string topText = "Choose your charackter";
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, topText.c_str(), textColor);
+    SDL_Texture* topTextTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    SDL_Rect topTextRect = { screenWidth / 2 - 250, screenHeight - 650, 480, 60 };
+    SDL_RenderCopy(renderer, topTextTexture, nullptr, &topTextRect);
+
+    //kwadraty
     SDL_Rect knightBackground = { screenWidth / 2 - 290, screenHeight / 2 - 160, 280, 320 };
     SDL_Rect wizardBackground = { screenWidth / 2 + 10, screenHeight / 2 - 160, 280, 320 };
 
+    //szare t³o
     SDL_SetRenderDrawColor(renderer, 169, 169, 169, 169);
     SDL_RenderFillRect(renderer, &knightBackground);
     SDL_RenderFillRect(renderer, &wizardBackground);
 
+    //ramki
     SDL_RenderCopy(renderer, frameTexture, nullptr, &knightBackground);
     SDL_RenderCopy(renderer, frameTexture, nullptr, &wizardBackground);
 
+    //tekstury postaci
     SDL_Rect knightButton = { screenWidth / 2 - 250, screenHeight / 2 - 100, 200, 200 };
     SDL_Rect wizardButton = { screenWidth / 2 + 50, screenHeight / 2 - 100, 200, 200 };
-
     SDL_RenderCopy(renderer, warriorTexture, nullptr, &knightButton);
     SDL_RenderCopy(renderer, wizardTexture, nullptr, &wizardButton);
+
+    //napisy pod teksturami
+    SDL_Color textColor = {255, 255, 255, 255}; //do zmiany
+
+    std::string warriorText = "Warrior";
+    surfaceMessage = TTF_RenderText_Solid(font, warriorText.c_str(), textColor);
+    SDL_Texture* warriorTextTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    SDL_Rect warriorTextRect = { screenWidth / 2 - 230, screenHeight / 2 + 170, 160, 30 };
+    SDL_RenderCopy(renderer, warriorTextTexture, nullptr, &warriorTextRect);
+
+    std::string wizardText = "Wizard";
+    surfaceMessage = TTF_RenderText_Solid(font, wizardText.c_str(), textColor);
+    SDL_Texture* wizardTextTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    SDL_Rect wizardTextRect = { screenWidth / 2 + 80, screenHeight / 2 + 170, 130, 30 };
+    SDL_RenderCopy(renderer, wizardTextTexture, nullptr, &wizardTextRect);
+
+    //zwolnienie pamiêci
+    SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(topTextTexture);
 
     SDL_RenderPresent(renderer);
 }
@@ -162,7 +192,6 @@ void Render::renderEndGameScreen(int enemiesDefeated) {
     std::string scoreText = "Your score: " + std::to_string(enemiesDefeated);
     SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
     SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-
     SDL_Rect scoreTextRect = { screenWidth / 2 - 150, screenHeight - 600, 300, 50 };
     SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreTextRect);
 
@@ -184,6 +213,8 @@ void Render::renderEndGameScreen(int enemiesDefeated) {
 
 
     SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(textCharckter);
+    SDL_DestroyTexture(scoreTexture);
     SDL_DestroyTexture(textStart);
     SDL_DestroyTexture(textExit);
 
