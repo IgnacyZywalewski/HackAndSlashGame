@@ -24,9 +24,9 @@ private:
     void loadTextures();
     void gameLoop();
     void handleEvents();
-    void updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon);
-    void renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render);
-    GameState handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Player& playerObject, Weapon& weapon);
+    void updateGameEntities(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, Weapon& weapon);
+    void renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, Weapon& weapon, Render& render);
+    GameState handleCollisions(std::vector<std::unique_ptr<Enemy>>& enemies, RectPlayer& player, Player& playerObject, Weapon& weapon);
 
     void handleStartScreenEvents();
     void handleCharacterSelectionEvents(bool& characterSelected);
@@ -47,4 +47,6 @@ private:
     bool quitGame = false;
 
     float playerSpeed = 2;
+    int timeBetweenEnemies = 1000;
+    int enemiesDefeated = 0;
 };

@@ -13,22 +13,17 @@
 
 float playerWidth = 50;
 float playerHeight = 50;
-float enemySpeed = 1;
 
-int timeBetweenEnemies = 1000;
-int enemiesDefeated = 0;
-
-SDL_Texture* enemyTexture = nullptr;
+//SDL_Texture* enemyTexture = nullptr;
 SDL_Texture* warriorTexture = nullptr;
 SDL_Texture* wizardTexture = nullptr;
 SDL_Texture* weaponWhipTexture = nullptr;
 SDL_Texture* weaponFireballTexture = nullptr;
 SDL_Texture* pauseButtonTexture = nullptr;
-SDL_Texture* startButtonTexture = nullptr;
-SDL_Texture* exitButtonTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
+
 }
 
 Game::~Game() {
@@ -62,10 +57,6 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 }
 
 void Game::loadTextures() {
-    SDL_Surface* tmpbatSurface = IMG_Load("assets/enemy_bat.png");
-    enemyTexture = SDL_CreateTextureFromSurface(renderer, tmpbatSurface);
-    SDL_FreeSurface(tmpbatSurface);
-
     SDL_Surface* tmpKnightSurface = IMG_Load("assets/player_warrior.png");
     warriorTexture = SDL_CreateTextureFromSurface(renderer, tmpKnightSurface);
     SDL_FreeSurface(tmpKnightSurface);
@@ -85,14 +76,6 @@ void Game::loadTextures() {
     SDL_Surface* tmpPauseSurface = IMG_Load("assets/pause_button.png");
     pauseButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpPauseSurface);
     SDL_FreeSurface(tmpPauseSurface);
-
-    SDL_Surface* tmpStartSurface = IMG_Load("assets/start_button.png");
-    startButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpStartSurface);
-    SDL_FreeSurface(tmpStartSurface);
-
-    SDL_Surface* tmpExitSurface = IMG_Load("assets/exit_button.png");
-    exitButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpExitSurface);
-    SDL_FreeSurface(tmpExitSurface);
 }
 
 void Game::handleStartScreenEvents() {
@@ -255,7 +238,7 @@ SDL_Rect convertToSDLRect(const T& rect) {
     return sdlRect;
 }
 
-void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& timeBetweenEnemies, int& enemiesDefeated, bool& difficultyIncreased) {
+void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& timeBetweenEnemies, int& enemiesDefeated, bool& difficultyIncreased) {
     static int lastEnemyTime = 0;
     int currentTime = SDL_GetTicks();
 
@@ -263,7 +246,15 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
         float randomX = rand() % screenWidth;
         float randomY = rand() % screenHeight;
 
-        enemies.push_back(Enemy(renderer, randomX, randomY, 50, 20));
+        if (rand() % 2 == 0) {
+            std::unique_ptr<Enemy> newBat = std::make_unique<Bat>(renderer, randomX, randomY, 50, 20);
+            enemies.push_back(std::move(newBat));
+        }
+        else {
+            std::unique_ptr<Enemy> newSkeleton = std::make_unique<Skeleton>(renderer, randomX, randomY, 40, 45);
+            enemies.push_back(std::move(newSkeleton));
+        }
+
         lastEnemyTime = currentTime;
     }
 
@@ -279,15 +270,20 @@ void generateEnemies(std::vector<Enemy>& enemies, SDL_Renderer* renderer, int sc
     }
 }
 
-void drawEnemies(std::vector<Enemy>& enemies) {
-    for (Enemy& enemy : enemies) {
-        enemy.draw(enemyTexture);
+void drawEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, float playerX) {
+    for (const auto& enemy : enemies) {
+        if (dynamic_cast<Bat*>(enemy.get())) {
+            dynamic_cast<Bat*>(enemy.get())->draw(playerX);
+        }
+        else if (dynamic_cast<Skeleton*>(enemy.get())) {
+            dynamic_cast<Skeleton*>(enemy.get())->draw(playerX);
+        }
     }
 }
 
-void updateEnemies(std::vector<Enemy>& enemies, float playerX, float playerY) {
-    for (Enemy& enemy : enemies) {
-        enemy.updateEnemyPosition(playerX, playerY, enemySpeed);
+void updateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, float playerX, float playerY) {
+    for (const auto& enemy : enemies) {
+        enemy->updateEnemyPosition(playerX, playerY);
     }
 }
 
@@ -296,29 +292,34 @@ bool checkCollision(SDL_Rect rectA, SDL_Rect rectB) {
     return false;
 }
 
-GameState Game::handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player, Player& playerObject, Weapon& weapon) {
+GameState Game::handleCollisions(std::vector<std::unique_ptr<Enemy>>& enemies, RectPlayer& player, Player& playerObject, Weapon& weapon) {
     for (auto it = enemies.begin(); it != enemies.end();) {
         SDL_Rect playerRect = convertToSDLRect(player);
-        SDL_Rect enemyRect = convertToSDLRect(it->rect);
+        SDL_Rect enemyRect = convertToSDLRect((*it)->rect);
         SDL_Rect weaponRect = convertToSDLRect(weapon.rect);
 
         if (checkCollision(playerRect, enemyRect)) {
-            it->isStopped = true;
-            playerObject.reduceHealth(it->getDamage());
+            (*it)->isStopped = true;
+            playerObject.reduceHealth((*it)->getDamage());
             if (playerObject.getHealth() <= 0) {
                 return GameState::END;
             }
         }
         else {
-            it->isStopped = false;
+            (*it)->isStopped = false;
         }
 
         if (selectedCharacter == "warrior") {
             if (checkCollision(weaponRect, enemyRect)) {
-                it->reduceHealth(weapon.getDamage());
-                if (it->getHealth() <= 0) {
+                (*it)->reduceHealth(weapon.getDamage());
+                if ((*it)->getHealth() <= 0) {
+                    if (dynamic_cast<Skeleton*>(it->get()) != nullptr) {
+                        enemiesDefeated += 2;
+                    }
+                    else {
+                        enemiesDefeated++;
+                    }
                     it = enemies.erase(it);
-                    enemiesDefeated++;
                 }
                 else {
                     ++it;
@@ -336,12 +337,17 @@ GameState Game::handleCollisions(std::vector<Enemy>& enemies, RectPlayer& player
                 SDL_Rect fireballRect = convertToSDLRect(fb.rect);
 
                 if (checkCollision(fireballRect, enemyRect)) {
-                    it->reduceHealth(fireball->getDamage());
+                    (*it)->reduceHealth(fireball->getDamage());
                     enemyHit = true;
 
-                    if (it->getHealth() <= 0) {
+                    if ((*it)->getHealth() <= 0) {
+                        if (dynamic_cast<Skeleton*>(it->get()) != nullptr) {
+                            enemiesDefeated += 2;
+                        }
+                        else {
+                            enemiesDefeated++;
+                        }
                         it = enemies.erase(it);
-                        enemiesDefeated++;
                     }
                     else {
                         ++it;
@@ -384,7 +390,7 @@ void Game::handleEvents() {
     }
 }
 
-void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapon& weapon) {
+void Game::updateGameEntities(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, Weapon& weapon) {
     // Logika aktualizacji gracza, wrog�w, broni, kolizji itp.
     Sleep(10);
     player.updatePlayerPosition(screenWidth, screenHeight, playerSpeed);
@@ -406,8 +412,8 @@ void Game::updateGameEntities(Player& player, std::vector<Enemy>& enemies, Weapo
     updateEnemies(enemies, player.rect.x, player.rect.y);
 }
 
-void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapon, Render& render) {
-    // Renderowanie i czyszczenie t�a
+void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, Weapon& weapon, Render& render) {
+    // Renderowanie i czyszczenie tła
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, render.gameScreenTexture, nullptr, nullptr);
 
@@ -417,7 +423,7 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
     render.renderFPS();
     render.renderPauseButton(pauseButtonTexture);
 
-    // Renderowanie gracza, wrog�w, broni.
+    // Renderowanie gracza, wrogów, broni.
     player.spawnPlayer();
     if (selectedCharacter == "warrior") {
         player.playerTexture = warriorTexture;
@@ -436,13 +442,13 @@ void Game::renderGame(Player& player, std::vector<Enemy>& enemies, Weapon& weapo
         }
     }
 
-    drawEnemies(enemies);
+    drawEnemies(enemies, player.rect.x);
     SDL_RenderPresent(renderer);
 }
 
 void Game::gameLoop() {
     Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
-    std::vector<Enemy> enemies;
+    std::vector<std::unique_ptr<Enemy>> enemies;
     Render render(renderer, screenWidth, screenHeight);
 
     Weapon* weapon = nullptr;
