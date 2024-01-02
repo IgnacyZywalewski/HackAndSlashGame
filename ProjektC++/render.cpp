@@ -201,7 +201,7 @@ void Render::renderEndGameScreen(int enemiesDefeated) {
     SDL_Rect startTextRect = { screenWidth / 2 - 45, screenHeight / 2 - 90, 90, 35 };
     SDL_RenderCopy(renderer, textStart, nullptr, &startTextRect);
 
-    surfaceMessage = TTF_RenderText_Solid(font, "Choose charckter", textColor);
+    surfaceMessage = TTF_RenderText_Solid(font, "Choose charackter", textColor);
     SDL_Texture* textCharckter = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
     SDL_Rect charTextRect = { screenWidth / 2 - 93, screenHeight / 2 - 10, 190, 35 };
     SDL_RenderCopy(renderer, textCharckter, nullptr, &charTextRect);

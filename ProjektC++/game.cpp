@@ -152,21 +152,30 @@ void Game::handleEndGameEvents() {
             SDL_Rect characterSelectionButton = { screenWidth / 2 - 125, screenHeight / 2 - 30, 250, 50 };
             SDL_Rect exitButton = { screenWidth / 2 - 125, screenHeight / 2 + 40, 250, 50 };
 
+            //replay
             if (mouseX >= restartButton.x && mouseX <= (restartButton.x + restartButton.w) &&
                 mouseY >= restartButton.y && mouseY <= (restartButton.y + restartButton.h)) {
                 gameState = GameState::PLAY;
                 startGame = true;
                 quitGame = false;
                 enemiesDefeated = 0;
+                batsDefeated = 0;
+                skeletonsDefeated = 0;
                 loadTextures();
             }
+
+            //wybór postaci
             else if (mouseX >= characterSelectionButton.x && mouseX <= (characterSelectionButton.x + characterSelectionButton.w) &&
                 mouseY >= characterSelectionButton.y && mouseY <= (characterSelectionButton.y + characterSelectionButton.h)) {
                 gameState = GameState::START_SCREEN;
                 characterSelected = false;
                 enemiesDefeated = 0;
+                batsDefeated = 0;
+                skeletonsDefeated = 0;
                 loadTextures();
             }
+
+            //wyjście
             else if (mouseX >= exitButton.x && mouseX <= (exitButton.x + exitButton.w) &&
                 mouseY >= exitButton.y && mouseY <= (exitButton.y + exitButton.h)) {
                 gameState = GameState::EXIT;
@@ -238,37 +247,46 @@ SDL_Rect convertToSDLRect(const T& rect) {
     return sdlRect;
 }
 
-void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& timeBetweenEnemies, int& enemiesDefeated, bool& difficultyIncreased) {
-    static int lastEnemyTime = 0;
+void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& batsDefeated, int& skeletonsDefeated, int& enemiesDefeated) {
+    static int lastBatTime = 0;
+    static int lastSkeletonTime = 0;
+
+    static int timeBetweenBats = 2000;
+    static int timeBetweenSkeletons = 4000;
+
+    static int breakpoint = 100;
+
     int currentTime = SDL_GetTicks();
 
-    if (currentTime > lastEnemyTime + timeBetweenEnemies) {
+    if (currentTime > lastBatTime + timeBetweenBats) {
         float randomX = rand() % screenWidth;
         float randomY = rand() % screenHeight;
 
-        if (rand() % 2 == 0) {
-            std::unique_ptr<Enemy> newBat = std::make_unique<Bat>(renderer, randomX, randomY, 50, 20);
-            enemies.push_back(std::move(newBat));
-        }
-        else {
-            std::unique_ptr<Enemy> newSkeleton = std::make_unique<Skeleton>(renderer, randomX, randomY, 40, 45);
-            enemies.push_back(std::move(newSkeleton));
-        }
+        std::unique_ptr<Enemy> newBat = std::make_unique<Bat>(renderer, randomX, randomY, 50, 20);
+        enemies.push_back(std::move(newBat));
 
-        lastEnemyTime = currentTime;
-    }
+        lastBatTime = currentTime;
 
-    if (enemiesDefeated % 10 == 0 && enemiesDefeated > 0 && !difficultyIncreased) {
-        if (timeBetweenEnemies > 100) {
-            timeBetweenEnemies -= 50;
-            difficultyIncreased = true;
+        if (batsDefeated <= breakpoint && enemiesDefeated <= breakpoint && batsDefeated % 10 == 0) {
+            timeBetweenBats -= 20;
         }
     }
 
-    if (enemiesDefeated % 10 != 0) {
-        difficultyIncreased = false;
+    if (enemiesDefeated >= breakpoint && currentTime > lastSkeletonTime + timeBetweenSkeletons) {
+        float randomX = rand() % screenWidth;
+        float randomY = rand() % screenHeight;
+
+        std::unique_ptr<Enemy> newSkeleton = std::make_unique<Skeleton>(renderer, randomX, randomY, 40, 45);
+        enemies.push_back(std::move(newSkeleton));
+
+        lastSkeletonTime = currentTime;
+
+        if (skeletonsDefeated % 10 == 0 && skeletonsDefeated < 100) {
+            timeBetweenSkeletons -= 100;
+        }
     }
 }
+
 
 void drawEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, float playerX) {
     for (const auto& enemy : enemies) {
@@ -315,9 +333,11 @@ GameState Game::handleCollisions(std::vector<std::unique_ptr<Enemy>>& enemies, R
                 if ((*it)->getHealth() <= 0) {
                     if (dynamic_cast<Skeleton*>(it->get()) != nullptr) {
                         enemiesDefeated += 2;
+                        skeletonsDefeated++;
                     }
                     else {
                         enemiesDefeated++;
+                        batsDefeated++;
                     }
                     it = enemies.erase(it);
                 }
@@ -343,9 +363,11 @@ GameState Game::handleCollisions(std::vector<std::unique_ptr<Enemy>>& enemies, R
                     if ((*it)->getHealth() <= 0) {
                         if (dynamic_cast<Skeleton*>(it->get()) != nullptr) {
                             enemiesDefeated += 2;
+                            skeletonsDefeated++;
                         }
                         else {
                             enemiesDefeated++;
+                            batsDefeated++;
                         }
                         it = enemies.erase(it);
                     }
@@ -408,7 +430,7 @@ void Game::updateGameEntities(Player& player, std::vector<std::unique_ptr<Enemy>
         }
     }
 
-    generateEnemies(enemies, renderer, screenWidth, screenHeight, timeBetweenEnemies, enemiesDefeated, player.flag);
+    generateEnemies(enemies, renderer, screenWidth, screenHeight, batsDefeated, skeletonsDefeated, enemiesDefeated);
     updateEnemies(enemies, player.rect.x, player.rect.y);
 }
 

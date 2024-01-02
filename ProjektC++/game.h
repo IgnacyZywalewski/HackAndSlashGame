@@ -47,6 +47,7 @@ private:
     bool quitGame = false;
 
     float playerSpeed = 2;
-    int timeBetweenEnemies = 1000;
+    int batsDefeated = 0;
+    int skeletonsDefeated = 0;
     int enemiesDefeated = 0;
 };
