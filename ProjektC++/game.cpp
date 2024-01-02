@@ -251,10 +251,10 @@ void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer*
     static int lastBatTime = 0;
     static int lastSkeletonTime = 0;
 
-    static int timeBetweenBats = 2000;
+    static int timeBetweenBats = 1500;
     static int timeBetweenSkeletons = 4000;
 
-    static int breakpoint = 100;
+    static int breakpoint = 0;
 
     int currentTime = SDL_GetTicks();
 
@@ -268,7 +268,9 @@ void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer*
         lastBatTime = currentTime;
 
         if (batsDefeated <= breakpoint && enemiesDefeated <= breakpoint && batsDefeated % 10 == 0) {
-            timeBetweenBats -= 20;
+            if (timeBetweenBats > 500) {
+                timeBetweenBats -= 20;
+            }
         }
     }
 
@@ -282,7 +284,9 @@ void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer*
         lastSkeletonTime = currentTime;
 
         if (skeletonsDefeated % 10 == 0 && skeletonsDefeated < 100) {
-            timeBetweenSkeletons -= 100;
+            if (timeBetweenSkeletons > 1000) {
+                timeBetweenSkeletons -= 100;
+            }
         }
     }
 }
