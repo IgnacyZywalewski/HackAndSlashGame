@@ -14,7 +14,6 @@
 float playerWidth = 50;
 float playerHeight = 50;
 
-//SDL_Texture* enemyTexture = nullptr;
 SDL_Texture* warriorTexture = nullptr;
 SDL_Texture* wizardTexture = nullptr;
 SDL_Texture* weaponWhipTexture = nullptr;
@@ -247,14 +246,14 @@ SDL_Rect convertToSDLRect(const T& rect) {
     return sdlRect;
 }
 
+static int timeBetweenBats = 1500;
+static int timeBetweenSkeletons = 4000;
+
 void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& batsDefeated, int& skeletonsDefeated, int& enemiesDefeated) {
     static int lastBatTime = 0;
     static int lastSkeletonTime = 0;
 
-    static int timeBetweenBats = 1500;
-    static int timeBetweenSkeletons = 4000;
-
-    static int breakpoint = 0;
+    static int breakpoint = 100;
 
     int currentTime = SDL_GetTicks();
 
@@ -267,9 +266,9 @@ void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer*
 
         lastBatTime = currentTime;
 
-        if (batsDefeated <= breakpoint && enemiesDefeated <= breakpoint && batsDefeated % 10 == 0) {
-            if (timeBetweenBats > 500) {
-                timeBetweenBats -= 20;
+        if (enemiesDefeated <= breakpoint && batsDefeated % 10 == 0) {
+            if (timeBetweenBats > 100) {
+                timeBetweenBats -= 50;
             }
         }
     }

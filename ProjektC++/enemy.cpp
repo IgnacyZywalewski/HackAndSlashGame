@@ -15,7 +15,7 @@ Enemy::~Enemy() {}
 
 Bat::Bat(SDL_Renderer* renderer, float x, float y, float w, float h)
     : Enemy(renderer, x, y, w, h) {
-    enemySpeed = 1.0f;
+    enemySpeed = 1.2f;
     damage = 0.017f;
     health = 20.0f;
     
@@ -30,7 +30,7 @@ Bat::~Bat() {
 
 Skeleton::Skeleton(SDL_Renderer* renderer, float x, float y, float w, float h)
     : Enemy(renderer, x, y, w, h) {
-    enemySpeed = 0.5f;
+    enemySpeed = 0.8f;
     damage = 0.1f;
     health = 100.0f;
     
