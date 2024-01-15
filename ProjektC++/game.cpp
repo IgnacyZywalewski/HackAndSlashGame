@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <windows.h>
+#include <algorithm>
 #include <vector>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -10,6 +11,7 @@
 #include "enemy.h"
 #include "weapons.h"
 #include "render.h"
+#include "powerUp.h"
 
 float playerWidth = 50;
 float playerHeight = 50;
@@ -415,6 +417,48 @@ void Game::handleEvents() {
     }
 }
 
+void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<PowerUp>>& powerUps) {
+    // Sprawdź, czy istnieje już power-up danego typu
+    bool healthPowerUpExists = std::any_of(powerUps.begin(), powerUps.end(), [](const auto& powerUp) {
+        return dynamic_cast<HealthPowerUp*>(powerUp.get()) != nullptr;
+        });
+
+    // Sprawdź, czy wystarczył czas od zebrania poprzedniego power-upu
+    int currentTime = SDL_GetTicks();
+    bool enoughTimePassed = currentTime > timeSinceLastPowerUp + 20000;
+
+    // Generuj nowy power-up co 10 sekund, jeśli nie istnieje już power-up danego typu i wystarczył czas od zebrania poprzedniego
+    if (!healthPowerUpExists && enoughTimePassed && enemiesDefeated > 50) {
+        float randomX = rand() % (screenWidth - 30);
+        float randomY = rand() % (screenHeight - 30);
+
+        std::unique_ptr<PowerUp> newPowerUp = std::make_unique<HealthPowerUp>(renderer, randomX, randomY, 30, 30);
+        powerUps.push_back(std::move(newPowerUp));
+
+        // Zaktualizuj czas od zebrania poprzedniego power-upu
+        timeSinceLastPowerUp = currentTime;
+    }
+
+    // Sprawdź kolizje i działanie
+    for (auto it = powerUps.begin(); it != powerUps.end();) {
+        SDL_Rect playerRect = convertToSDLRect(player.rect);
+        SDL_Rect powerUpRect = convertToSDLRect((*it)->rect);
+
+        if (checkCollision(playerRect, powerUpRect)) {
+            (*it)->applyEffect(player);
+            it = powerUps.erase(it);
+
+            // Zaktualizuj czas od zebrania poprzedniego power-upu
+            timeSinceLastPowerUp = currentTime;
+        }
+        else {
+            (*it)->draw();
+            ++it;
+        }
+    }
+}
+
+
 void Game::updateGameEntities(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, Weapon& weapon) {
     // Logika aktualizacji gracza, wrog�w, broni, kolizji itp.
     Sleep(10);
@@ -437,10 +481,13 @@ void Game::updateGameEntities(Player& player, std::vector<std::unique_ptr<Enemy>
     updateEnemies(enemies, player.rect.x, player.rect.y);
 }
 
-void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, Weapon& weapon, Render& render) {
+void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, std::vector<std::unique_ptr<PowerUp>>& powerUps, Weapon& weapon, Render& render) {
     // Renderowanie i czyszczenie tła
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, render.gameScreenTexture, nullptr, nullptr);
+
+    //działanie powerUpów
+    handlePowerUps(player, powerUps);
 
     // Renderowanie interfejsu
     render.renderHealth(player.getHealth());
@@ -466,14 +513,15 @@ void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemi
             fireball->drawWeapon(renderer);
         }
     }
-
     drawEnemies(enemies, player.rect.x);
+
     SDL_RenderPresent(renderer);
 }
 
 void Game::gameLoop() {
     Player player(renderer, screenWidth / 2 - (playerWidth / 2), screenHeight / 2 - (playerHeight / 2), playerWidth, playerHeight);
     std::vector<std::unique_ptr<Enemy>> enemies;
+    std::vector<std::unique_ptr<PowerUp>> powerUps;
     Render render(renderer, screenWidth, screenHeight);
 
     Weapon* weapon = nullptr;
@@ -488,7 +536,7 @@ void Game::gameLoop() {
             gameState = handleCollisions(enemies, player.rect, player, *weapon);
         }
 
-        renderGame(player, enemies, *weapon, render);
+        renderGame(player, enemies, powerUps, *weapon, render);
     }
 
     delete weapon;

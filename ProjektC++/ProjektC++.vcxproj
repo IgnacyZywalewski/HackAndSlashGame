@@ -141,6 +141,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="powerUp.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="powerUp.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="weapons.h" />
   </ItemGroup>

@@ -22,6 +22,8 @@ public:
     void updatePlayerPosition(int screenWidth, int screenHeight, float playerSpeed);
     float getHealth() const { return health; }
     void reduceHealth(float damage) { health -= damage; }
+    void increaseHealth(float value) { health += value; }
+    void setHealth(float value) { health = value; }
 
     SDL_Texture* playerTexture; 
     RectPlayer rect;
