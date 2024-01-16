@@ -20,6 +20,9 @@ public:
     float getHealth() const { return health; }
     void reduceHealth(float damage) { health -= damage; }
 
+    float getSpeed() const { return enemySpeed; }
+    void setSpeed(float newSpeed) { enemySpeed = newSpeed;}
+
     bool isStopped = false;
     RectEnemy rect;
 
