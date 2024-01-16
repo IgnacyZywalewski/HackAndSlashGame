@@ -429,11 +429,13 @@ void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& e
         return dynamic_cast<TimeFreezePowerUp*>(powerUp.get()) != nullptr;
         });
 
+    bool eliminationPowerUpExists = std::any_of(powerUps.begin(), powerUps.end(), [](const auto& powerUp) {
+        return dynamic_cast<EliminationPowerUp*>(powerUp.get()) != nullptr;
+        });
 
-    // Sprawdź, czy wystarczył czas od zebrania poprzedniego power-upu
+    //Health
     int currentTime1 = SDL_GetTicks();
     bool enoughTimePassed1 = currentTime1 > timeSinceLastHealthPowerUp + 20000;
-    // Generuj nowy HealthPowerUp co 10 sekund, jeśli nie istnieje już power-up danego typu i wystarczył czas od zebrania poprzedniego
     if (!healthPowerUpExists && enoughTimePassed1 && enemiesDefeated > 50) {
         float randomX = rand() % (screenWidth - 30);
         float randomY = rand() % (screenHeight - 30);
@@ -444,9 +446,9 @@ void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& e
         timeSinceLastHealthPowerUp = currentTime1;
     }
 
+    // Time freeze
     int currentTime2 = SDL_GetTicks();
     bool enoughTimePassed2 = currentTime2 > timeSinceLastFreezePowerUp + 30000;
-    // Generuj nowy TimeFreezePowerUp co 10 sekund, jeśli nie istnieje już power-up danego typu i wystarczył czas od zebrania poprzedniego
     if (!timeFreezePowerUpExists && enoughTimePassed2 && enemiesDefeated > 100) {
         float randomX = rand() % (screenWidth - 30);
         float randomY = rand() % (screenHeight - 30);
@@ -457,6 +459,18 @@ void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& e
         timeSinceLastFreezePowerUp = currentTime2;
     }
 
+    //Elimination
+    int currentTime3 = SDL_GetTicks();
+    bool enoughTimePassed3 = currentTime3 > timeSinceLastEliminationPowerUp + 90000;
+    if (!eliminationPowerUpExists && enoughTimePassed3 && enemiesDefeated > 200) {
+        float randomX = rand() % (screenWidth - 30);
+        float randomY = rand() % (screenHeight - 30);
+
+        std::unique_ptr<PowerUp> newPowerUp = std::make_unique<EliminationPowerUp>(renderer, randomX, randomY, 25, 35);
+        powerUps.push_back(std::move(newPowerUp));
+
+        timeSinceLastEliminationPowerUp = currentTime3;
+    }
 
     // Obsługa zamrożenia czasu
     if (isTimeFrozen) {
@@ -493,8 +507,12 @@ void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& e
                 timeFrozenStartTime = SDL_GetTicks();
                 timeSinceLastFreezePowerUp = SDL_GetTicks();
             }
-
-            else timeSinceLastHealthPowerUp = SDL_GetTicks();
+            else if (dynamic_cast<EliminationPowerUp*>((*it).get())) {
+                timeSinceLastEliminationPowerUp = SDL_GetTicks();
+            }
+            else {
+                timeSinceLastHealthPowerUp = SDL_GetTicks();
+            }
 
             it = powerUps.erase(it);
             

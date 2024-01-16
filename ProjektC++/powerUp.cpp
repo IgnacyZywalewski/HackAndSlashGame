@@ -59,10 +59,31 @@ void TimeFreezePowerUp::draw() {
     SDL_RenderCopy(renderer, timeFreeze_powerUp, nullptr, &powerUpRect);
 }
 
-
 void TimeFreezePowerUp::applyEffect(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies) {
     for (auto& enemyPtr : enemies) {
         enemyPtr->setSpeed(0.0f);
     }
 }
 
+
+EliminationPowerUp::EliminationPowerUp(SDL_Renderer* renderer, float x, float y, float w, float h)
+    : PowerUp(renderer, x, y, w, h) {
+
+    SDL_Surface* tmpEliminationPowerUpSurface = IMG_Load("assets/elimination_powerUp.png");
+    elimination_powerUp = SDL_CreateTextureFromSurface(renderer, tmpEliminationPowerUpSurface);
+    SDL_FreeSurface(tmpEliminationPowerUpSurface);
+}
+
+EliminationPowerUp::~EliminationPowerUp() {
+    SDL_DestroyTexture(elimination_powerUp);
+}
+
+void EliminationPowerUp::draw() {
+    SDL_Rect powerUpRect = { static_cast<int>(rect.x), static_cast<int>(rect.y),
+                             static_cast<int>(rect.w), static_cast<int>(rect.h) };
+    SDL_RenderCopy(renderer, elimination_powerUp, nullptr, &powerUpRect);
+}
+
+void EliminationPowerUp::applyEffect(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies) {
+    enemies.clear();
+}

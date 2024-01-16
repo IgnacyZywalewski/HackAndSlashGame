@@ -56,6 +56,7 @@ private:
 
     int timeSinceLastHealthPowerUp = 0;
     int timeSinceLastFreezePowerUp = 0;
+    int timeSinceLastEliminationPowerUp = 0;
     
     int timeFrozenStartTime = 0;
 };

@@ -54,3 +54,15 @@ private:
     int freezeTime = 10000;
     SDL_Texture* timeFreeze_powerUp;
 };
+
+class EliminationPowerUp : public PowerUp {
+public:
+    EliminationPowerUp(SDL_Renderer* renderer, float x, float y, float w, float h);
+    ~EliminationPowerUp() override;
+
+    void draw() override;
+    void applyEffect(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies) override;
+
+private:
+    SDL_Texture* elimination_powerUp;
+};
