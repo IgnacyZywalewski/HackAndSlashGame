@@ -15,6 +15,8 @@
 
 float playerWidth = 50;
 float playerHeight = 50;
+static int timeBetweenBats = 1250;
+static int timeBetweenSkeletons = 4000;
 bool isTimeFrozen = false;
 
 SDL_Texture* warriorTexture = nullptr;
@@ -59,6 +61,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 }
 
 void Game::loadTextures() {
+
     SDL_Surface* tmpKnightSurface = IMG_Load("assets/player_warrior.png");
     warriorTexture = SDL_CreateTextureFromSurface(renderer, tmpKnightSurface);
     SDL_FreeSurface(tmpKnightSurface);
@@ -163,6 +166,8 @@ void Game::handleEndGameEvents() {
                 enemiesDefeated = 0;
                 batsDefeated = 0;
                 skeletonsDefeated = 0;
+                timeBetweenBats = 1250;
+                timeBetweenSkeletons = 4000;
                 loadTextures();
             }
 
@@ -174,6 +179,8 @@ void Game::handleEndGameEvents() {
                 enemiesDefeated = 0;
                 batsDefeated = 0;
                 skeletonsDefeated = 0;
+                timeBetweenBats = 1250;
+                timeBetweenSkeletons = 4000;
                 loadTextures();
             }
 
@@ -249,35 +256,40 @@ SDL_Rect convertToSDLRect(const T& rect) {
     return sdlRect;
 }
 
-static int timeBetweenBats = 1250;
-static int timeBetweenSkeletons = 4000;
-
 void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer* renderer, int screenWidth, int screenHeight, int& batsDefeated, int& skeletonsDefeated, int& enemiesDefeated) {
     static int lastBatTime = 0;
     static int lastSkeletonTime = 0;
 
     static int breakpoint = 100;
+    static bool batsTimeReduced = false;
+    static bool skeletonsTimeReduced = false;
 
-    int currentTime = SDL_GetTicks();
+    int currentTime1 = SDL_GetTicks();
 
-    if (currentTime > lastBatTime + timeBetweenBats) {
+    if (currentTime1 > lastBatTime + timeBetweenBats) {
         float randomX = rand() % screenWidth;
         float randomY = rand() % screenHeight;
 
         std::unique_ptr<Enemy> newBat = std::make_unique<Bat>(renderer, randomX, randomY, 50, 20);
-        if (isTimeFrozen) { newBat->setSpeed(0.0f);}
+        if (isTimeFrozen) { newBat->setSpeed(0.0f); }
         enemies.push_back(std::move(newBat));
 
-        lastBatTime = currentTime;
+        lastBatTime = currentTime1;
 
-        if (enemiesDefeated <= breakpoint && batsDefeated % 10 == 0) {
-            if (timeBetweenBats > 100) {
-                timeBetweenBats -= 50;
-            }
+        // Warunek na redukcję czasu co 10 pokonanych nietoperzy
+        if (enemiesDefeated <= breakpoint && batsDefeated % 10 == 0 && timeBetweenBats > 100 && !batsTimeReduced) {
+            timeBetweenBats -= 100;
+            batsTimeReduced = true;
+        }
+
+        // Zresetuj zmienną po każdych 10 pokonanych nietoperzach
+        if (batsDefeated % 10 != 0) {
+            batsTimeReduced = false;
         }
     }
 
-    if (enemiesDefeated >= breakpoint && currentTime > lastSkeletonTime + timeBetweenSkeletons) {
+    int currentTime2 = SDL_GetTicks();
+    if (enemiesDefeated >= breakpoint && currentTime2 > lastSkeletonTime + timeBetweenSkeletons) {
         float randomX = rand() % screenWidth;
         float randomY = rand() % screenHeight;
 
@@ -285,15 +297,21 @@ void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer*
         if (isTimeFrozen) { newSkeleton->setSpeed(0.0f); }
         enemies.push_back(std::move(newSkeleton));
 
-        lastSkeletonTime = currentTime;
+        lastSkeletonTime = currentTime2;
 
-        if (skeletonsDefeated % 10 == 0 && skeletonsDefeated < 100) {
-            if (timeBetweenSkeletons > 1000) {
-                timeBetweenSkeletons -= 100;
-            }
+        // Warunek na redukcję czasu co 10 pokonanych szkieletów
+        if (skeletonsDefeated % 5 == 0 && skeletonsDefeated < 100 && timeBetweenSkeletons > 1000 && !skeletonsTimeReduced) {
+            timeBetweenSkeletons -= 100;
+            skeletonsTimeReduced = true;
+        }
+
+        // Zresetuj zmienną po każdych 10 pokonanych szkieletach
+        if (skeletonsDefeated % 10 != 0) {
+            skeletonsTimeReduced = false;
         }
     }
 }
+
 
 void drawEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, float playerX) {
     for (const auto& enemy : enemies) {
@@ -463,8 +481,8 @@ void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& e
     int currentTime3 = SDL_GetTicks();
     bool enoughTimePassed3 = currentTime3 > timeSinceLastEliminationPowerUp + 90000;
     if (!eliminationPowerUpExists && enoughTimePassed3 && enemiesDefeated > 200) {
-        float randomX = rand() % (screenWidth - 30);
-        float randomY = rand() % (screenHeight - 30);
+        float randomX = rand() % (screenWidth - 25);
+        float randomY = rand() % (screenHeight - 35);
 
         std::unique_ptr<PowerUp> newPowerUp = std::make_unique<EliminationPowerUp>(renderer, randomX, randomY, 25, 35);
         powerUps.push_back(std::move(newPowerUp));
@@ -524,8 +542,6 @@ void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& e
     }
 }
 
-
-
 void Game::updateGameEntities(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, Weapon& weapon) {
     // Logika aktualizacji gracza, wrog�w, broni, kolizji itp.
     Sleep(10);
@@ -545,6 +561,7 @@ void Game::updateGameEntities(Player& player, std::vector<std::unique_ptr<Enemy>
     }
 
     generateEnemies(enemies, renderer, screenWidth, screenHeight, batsDefeated, skeletonsDefeated, enemiesDefeated);
+    //std::cout << "timeBetweenBats: " << timeBetweenBats << ", timeBetweenSkeletons: " << timeBetweenSkeletons << std::endl;
     updateEnemies(enemies, player.rect.x, player.rect.y);
 }
 
