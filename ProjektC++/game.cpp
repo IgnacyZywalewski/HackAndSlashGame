@@ -27,7 +27,6 @@ SDL_Texture* pauseButtonTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
-
 }
 
 Game::~Game() {
@@ -570,12 +569,6 @@ void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemi
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, render.gameScreenTexture, nullptr, nullptr);
 
-    // Renderowanie interfejsu
-    render.renderHealth(player.getHealth());
-    render.renderScore(enemiesDefeated);
-    render.renderFPS();
-    render.renderPauseButton(pauseButtonTexture);
-
     //działanie powerUpów
     handlePowerUps(player, enemies, powerUps);
 
@@ -598,6 +591,12 @@ void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemi
         }
     }
     drawEnemies(enemies, player.rect.x);
+
+    // Renderowanie interfejsu
+    render.renderHealth(player.getHealth());
+    render.renderScore(enemiesDefeated);
+    render.renderFPS();
+    render.renderPauseButton(pauseButtonTexture);
 
     SDL_RenderPresent(renderer);
 }
