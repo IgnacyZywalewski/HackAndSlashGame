@@ -84,10 +84,10 @@ void Render::renderFPS() {
 
 void Render::renderPauseButton(SDL_Texture* pauseTexture) {
     SDL_Rect pauseButtonRect;
-    pauseButtonRect.x = screenWidth - 70;
-    pauseButtonRect.y = 10;
-    pauseButtonRect.w = 60;
-    pauseButtonRect.h = 60;
+    pauseButtonRect.x = screenWidth - 60;
+    pauseButtonRect.y = 15;
+    pauseButtonRect.w = 40;
+    pauseButtonRect.h = 45;
 
     SDL_RenderCopy(renderer, pauseTexture, nullptr, &pauseButtonRect);
 }

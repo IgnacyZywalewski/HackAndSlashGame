@@ -24,6 +24,7 @@ SDL_Texture* wizardTexture = nullptr;
 SDL_Texture* weaponWhipTexture = nullptr;
 SDL_Texture* weaponFireballTexture = nullptr;
 SDL_Texture* pauseButtonTexture = nullptr;
+SDL_Texture* playButtonTexture = nullptr;
 
 Game::Game()
     : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
@@ -80,6 +81,10 @@ void Game::loadTextures() {
     SDL_Surface* tmpPauseSurface = IMG_Load("assets/pause_button.png");
     pauseButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpPauseSurface);
     SDL_FreeSurface(tmpPauseSurface);
+
+    SDL_Surface* tmpPlaySurface = IMG_Load("assets/play_button.png");
+    playButtonTexture = SDL_CreateTextureFromSurface(renderer, tmpPlaySurface);
+    SDL_FreeSurface(tmpPlaySurface);
 }
 
 void Game::handleStartScreenEvents() {
@@ -422,6 +427,9 @@ void Game::handleEvents() {
                 gameState = GameState::EXIT;
                 quitGame = true;
                 break;
+            case SDLK_p:
+                isGamePaused = !isGamePaused;
+                break;
             }
             break;
         case SDL_MOUSEBUTTONDOWN:
@@ -435,6 +443,7 @@ void Game::handleEvents() {
         }
     }
 }
+
 
 void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, std::vector<std::unique_ptr<PowerUp>>& powerUps) {
     // Sprawdź, czy istnieje już power-up danego typu
@@ -596,7 +605,10 @@ void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemi
     render.renderHealth(player.getHealth());
     render.renderScore(enemiesDefeated);
     render.renderFPS();
-    render.renderPauseButton(pauseButtonTexture);
+    if (isGamePaused) {
+        render.renderPauseButton(playButtonTexture);
+    }
+    else render.renderPauseButton(pauseButtonTexture);
 
     SDL_RenderPresent(renderer);
 }

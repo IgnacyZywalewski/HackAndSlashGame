@@ -47,7 +47,7 @@ void Whip::updatePosition(float playerX, float playerY, float playerW, float pla
     if (keystates[SDL_SCANCODE_LEFT]) {
         setWeaponDirection(WeaponDirection::LEFT);
     }
-    if (keystates[SDL_SCANCODE_RIGHT]) {
+    else if (keystates[SDL_SCANCODE_RIGHT]) {
         setWeaponDirection(WeaponDirection::RIGHT);
     }
 
@@ -55,7 +55,7 @@ void Whip::updatePosition(float playerX, float playerY, float playerW, float pla
         rect.x = playerX - playerW - 20;
         rect.y = playerY + (playerH / 2) - 10;
     }
-    else if (weaponDirection == WeaponDirection::RIGHT) {
+    if (weaponDirection == WeaponDirection::RIGHT) {
         rect.x = playerX + playerW - 20;
         rect.y = playerY + (playerH / 2) - 10;
     }

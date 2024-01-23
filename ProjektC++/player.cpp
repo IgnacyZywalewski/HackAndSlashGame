@@ -36,14 +36,14 @@ void Player::updatePlayerPosition(int screenWidth, int screenHeight, float playe
     if (keystates[SDL_SCANCODE_UP]) {
         newY -= playerSpeed;  // Przesunięcie w górę
     }
-    if (keystates[SDL_SCANCODE_DOWN]) {
+    else if (keystates[SDL_SCANCODE_DOWN]) {
         newY += playerSpeed;  // Przesunięcie w dół
     }
     if (keystates[SDL_SCANCODE_LEFT]) {
         newX -= playerSpeed;  // Przesunięcie w lewo
         facingDirection = Direction::LEFT;
     }
-    if (keystates[SDL_SCANCODE_RIGHT]) {
+    else if (keystates[SDL_SCANCODE_RIGHT]) {
         newX += playerSpeed;  // Przesunięcie w prawo
         facingDirection = Direction::RIGHT;
     }
