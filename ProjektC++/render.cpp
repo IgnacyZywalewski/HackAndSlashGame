@@ -95,19 +95,21 @@ void Render::renderPauseButton(SDL_Texture* pauseTexture) {
 void Render::renderStartScreen() {
     SDL_RenderClear(renderer);
 
+    //t³o
     SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 
+    //przyciski
     SDL_Rect startButton = { screenWidth / 2 - 120, screenHeight / 2 - 70, 240, 70 };
     SDL_Rect exitButton = { screenWidth / 2 - 120, screenHeight / 2 + 30, 240, 70 };
 
     SDL_RenderCopy(renderer, buttonTexture, nullptr, &startButton);
     SDL_RenderCopy(renderer, buttonTexture, nullptr, &exitButton);
 
+    //napisy na przyciskach
     SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Start", textColor);
     SDL_Texture* textStart = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
     SDL_Rect startTextRect = { screenWidth / 2 - 50, screenHeight / 2 - 50, 100, 35 };
     SDL_RenderCopy(renderer, textStart, nullptr, &startTextRect);
-
 
     surfaceMessage = TTF_RenderText_Solid(font, "Exit", textColor);
     SDL_Texture* textExit = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
@@ -154,7 +156,7 @@ void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Tex
     SDL_RenderCopy(renderer, wizardTexture, nullptr, &wizardButton);
 
     //napisy pod teksturami
-    SDL_Color textColor = {255, 255, 255, 255}; //do zmiany
+    SDL_Color textColor = {255, 255, 255, 255};
 
     std::string warriorText = "Warrior";
     surfaceMessage = TTF_RenderText_Solid(font, warriorText.c_str(), textColor);
@@ -178,8 +180,10 @@ void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Tex
 void Render::renderEndGameScreen(int enemiesDefeated) {
     SDL_RenderClear(renderer);
 
+    //t³o
     SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 
+    //przyciski
     SDL_Rect restartButton = { screenWidth / 2 - 125, screenHeight / 2 - 110, 250, 70 };
     SDL_Rect characterSelectionButton = { screenWidth / 2 - 125, screenHeight / 2 - 30, 250, 70 };
     SDL_Rect exitButton = { screenWidth / 2 - 125, screenHeight / 2 + 50, 250, 70 };
@@ -188,14 +192,14 @@ void Render::renderEndGameScreen(int enemiesDefeated) {
     SDL_RenderCopy(renderer, buttonTexture, nullptr, &characterSelectionButton);
     SDL_RenderCopy(renderer, buttonTexture, nullptr, &exitButton);
 
-
+    //wynik
     std::string scoreText = "Your score: " + std::to_string(enemiesDefeated);
     SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
     SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
     SDL_Rect scoreTextRect = { screenWidth / 2 - 150, screenHeight - 600, 300, 50 };
     SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreTextRect);
 
-
+    //napisy na przyciskach 
     surfaceMessage = TTF_RenderText_Solid(font, "Replay", textColor);
     SDL_Texture* textStart = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
     SDL_Rect startTextRect = { screenWidth / 2 - 45, screenHeight / 2 - 90, 90, 35 };

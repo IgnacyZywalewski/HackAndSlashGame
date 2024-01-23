@@ -33,6 +33,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_27B84061BC1E4A0CBF145217CF88D04C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_320DEEA69E1E403CA232F09297D7FE7C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -47,12 +53,6 @@
         {
         "MsmKey" = "8:_5A3FC556F4F875D83AC7D9B7FADDAC3A"
         "OwnerKey" = "8:_E01E8100CC2640CE90C6D1330FD5869E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6428129CD00B4326913D932A86758121"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -81,6 +81,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_90385B5FBE2245899F17A052F7FAE24F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9A0E36063FDF4D28AC9D013C0450B09C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -95,12 +101,6 @@
         {
         "MsmKey" = "8:_A46A6DBFE45B4A0A60FAE0F82AAF5802"
         "OwnerKey" = "8:_E01E8100CC2640CE90C6D1330FD5869E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B318CE113E724AD7B654D83238C37153"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -147,6 +147,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F2D47DEC5650422BA0FC901D95274DD1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F4A2F282601E439BB385D31ECA82CE7A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -169,6 +175,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -185,6 +207,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -266,6 +296,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27B84061BC1E4A0CBF145217CF88D04C"
+            {
+            "SourcePath" = "8:..\\ProjektC++\\assets\\play_button.png"
+            "TargetName" = "8:play_button.png"
+            "Tag" = "8:"
+            "Folder" = "8:_D400137A928948798C9E1DF5B630B169"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_320DEEA69E1E403CA232F09297D7FE7C"
             {
             "SourcePath" = "8:..\\ProjektC++\\assets\\weapon_fireball.png"
@@ -324,26 +374,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6428129CD00B4326913D932A86758121"
-            {
-            "SourcePath" = "8:..\\ProjektC++\\assets\\pause_button.png"
-            "TargetName" = "8:pause_button.png"
-            "Tag" = "8:"
-            "Folder" = "8:_D400137A928948798C9E1DF5B630B169"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_820BE95F2BE9409C847368C8BC19C486"
@@ -426,6 +456,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_90385B5FBE2245899F17A052F7FAE24F"
+            {
+            "SourcePath" = "8:..\\ProjektC++\\assets\\pause_button.png"
+            "TargetName" = "8:pause_button.png"
+            "Tag" = "8:"
+            "Folder" = "8:_D400137A928948798C9E1DF5B630B169"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9A0E36063FDF4D28AC9D013C0450B09C"
             {
             "SourcePath" = "8:..\\ProjektC++\\assets\\timeFreeze_powerUp.png"
@@ -484,26 +534,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B318CE113E724AD7B654D83238C37153"
-            {
-            "SourcePath" = "8:..\\ProjektC++\\assets\\game_screen.png"
-            "TargetName" = "8:game_screen.png"
-            "Tag" = "8:"
-            "Folder" = "8:_D400137A928948798C9E1DF5B630B169"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B8421EC5B62348208EFBF924D9292457"
@@ -626,6 +656,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F2D47DEC5650422BA0FC901D95274DD1"
+            {
+            "SourcePath" = "8:..\\ProjektC++\\assets\\game_screen.png"
+            "TargetName" = "8:game_screen.png"
+            "Tag" = "8:"
+            "Folder" = "8:_D400137A928948798C9E1DF5B630B169"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4A2F282601E439BB385D31ECA82CE7A"
             {
             "SourcePath" = "8:..\\ProjektC++\\assets\\HeadlinerNo45.ttf"
@@ -714,7 +764,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Installer"
         "ProductCode" = "8:{FB09C517-8689-4C2B-A4AD-B0F847C69C07}"
-        "PackageCode" = "8:{6729D3D6-33C4-44AE-A7E4-313E2A4E39D9}"
+        "PackageCode" = "8:{3A1F229C-1B5E-459B-AE19-19E7A7613C2E}"
         "UpgradeCode" = "8:{15C3F09E-38EC-4686-B840-4D21E92FC809}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"

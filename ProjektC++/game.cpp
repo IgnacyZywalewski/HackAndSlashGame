@@ -27,7 +27,7 @@ SDL_Texture* pauseButtonTexture = nullptr;
 SDL_Texture* playButtonTexture = nullptr;
 
 Game::Game()
-    : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1360), gameState(GameState::PLAY) {
+    : window(nullptr), renderer(nullptr), screenHeight(768), screenWidth(1366), gameState(GameState::PLAY) {
 }
 
 Game::~Game() {
@@ -40,7 +40,7 @@ Game::~Game() {
 
 void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cerr << "Nie uda�o si� zainicjowa� SDL: " << SDL_GetError() << "\n";
+        std::cerr << "Nie udalo sie zainicjowac SDL: " << SDL_GetError() << "\n";
     }
 
     window = SDL_CreateWindow(title, x, y, w, h, flags);
@@ -55,7 +55,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 
     int imgFlags = IMG_INIT_PNG;
     if (!(IMG_Init(imgFlags) & imgFlags)) {
-        std::cerr << "Nie mozna zainicjowa� SDL_Image: " << IMG_GetError() << "\n";
+        std::cerr << "Nie mozna zainicjowac SDL_Image: " << IMG_GetError() << "\n";
     }
 
 }
@@ -602,7 +602,7 @@ void Game::renderGame(Player& player, std::vector<std::unique_ptr<Enemy>>& enemi
     // Renderowanie interfejsu
     render.renderHealth(player.getHealth());
     render.renderScore(enemiesDefeated);
-    render.renderFPS();
+    //render.renderFPS();
     if (isGamePaused) {
         render.renderPauseButton(playButtonTexture);
     }
@@ -622,13 +622,13 @@ void Game::gameLoop() {
     else if (selectedCharacter == "wizard") { weapon = new Fireball(renderer, 0, 0, 0, 0); }
 
     while (gameState == GameState::PLAY) {
-        handleEvents();
-
         if (!isGamePaused) {
+            handleEvents();
             updateGameEntities(player, enemies, *weapon);
             gameState = handleCollisions(enemies, player.rect, player, *weapon);
         }
 
+        handleEvents();
         renderGame(player, enemies, powerUps, *weapon, render);
     }
 

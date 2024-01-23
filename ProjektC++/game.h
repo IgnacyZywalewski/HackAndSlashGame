@@ -38,8 +38,8 @@ private:
     SDL_Renderer* renderer;
     GameState gameState;
 
-    const int screenHeight;
-    const int screenWidth;
+    int screenHeight;
+    int screenWidth;
 
     std::string selectedCharacter;
 
