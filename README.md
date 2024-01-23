@@ -45,8 +45,8 @@ Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do
 
 - **Pauza rozgrywki:** 
     - przcisk 'P' na klawiaturze
-    - Kliknięcie w ikone pauzy na ekranie
+    - kliknięcie w ikone pauzy na ekranie
 
 - **Wyjście z gry:**:
-    - W trakcie rozgrywki należy kliknąć przycik ESC
-    - Na ekranie startowym i końcowym należy klkinąć przycisk Exit 
+    - w trakcie rozgrywki należy kliknąć przycik ESC
+    - na ekranie startowym i końcowym należy klkinąć przycisk Exit 
