@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProjektC++", "ProjektC++\ProjektC++.vcxproj", "{B067F773-49DF-41E7-B464-C9164E9E57BF}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{7CFF527E-AD00-42D3-80D7-43CB87DC2A35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{B067F773-49DF-41E7-B464-C9164E9E57BF}.Release|x64.Build.0 = Release|x64
 		{B067F773-49DF-41E7-B464-C9164E9E57BF}.Release|x86.ActiveCfg = Release|Win32
 		{B067F773-49DF-41E7-B464-C9164E9E57BF}.Release|x86.Build.0 = Release|Win32
+		{7CFF527E-AD00-42D3-80D7-43CB87DC2A35}.Debug|x64.ActiveCfg = Debug
+		{7CFF527E-AD00-42D3-80D7-43CB87DC2A35}.Debug|x86.ActiveCfg = Debug
+		{7CFF527E-AD00-42D3-80D7-43CB87DC2A35}.Release|x64.ActiveCfg = Release
+		{7CFF527E-AD00-42D3-80D7-43CB87DC2A35}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
