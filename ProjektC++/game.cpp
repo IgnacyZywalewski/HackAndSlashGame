@@ -316,7 +316,6 @@ void generateEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, SDL_Renderer*
     }
 }
 
-
 void drawEnemies(std::vector<std::unique_ptr<Enemy>>& enemies, float playerX) {
     for (const auto& enemy : enemies) {
         if (dynamic_cast<Bat*>(enemy.get())) {
@@ -436,14 +435,13 @@ void Game::handleEvents() {
             int mouseX, mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
 
-            if (mouseX >= screenWidth - 60 && mouseX <= screenWidth && mouseY >= 10 && mouseY <= 90) {
+            if (mouseX >= screenWidth - 70 && mouseX <= screenWidth && mouseY >= 10 && mouseY <= 70) {
                 isGamePaused = !isGamePaused;
             }
             break;
         }
     }
 }
-
 
 void Game::handlePowerUps(Player& player, std::vector<std::unique_ptr<Enemy>>& enemies, std::vector<std::unique_ptr<PowerUp>>& powerUps) {
     // Sprawdź, czy istnieje już power-up danego typu
