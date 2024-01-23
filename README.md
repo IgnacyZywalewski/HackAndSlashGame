@@ -29,7 +29,8 @@ Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do
 
 **Rozgrywka, edycja i kompilacja gry:**
    - pobierz biblioteki opisane powyżej z repozytorium
-   - sposób instalacji bibliotek: 
+   - sposób instalacji bibliotek:
+       - 
 
 
 ## Sterowanie
@@ -37,14 +38,14 @@ Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do
    - Aby aktywować działania przycisków (np. Start, Exit, Replay, ...) należy w nie klknąć
 
 - **Ruch:**
-   - W lewo: strzałka w lewo
-   - W Prawo: strzałka w prawo
-   - W górę: strzałka w górę
-   - W dół: strzałka w dół
+   - w lewo: strzałka w lewo
+   - w prawo: strzałka w prawo
+   - w górę: strzałka w górę
+   - w dół: strzałka w dół
 
-- **Pauza:** 
-    - Przcisk p na klawiaturze
-    - Kliknięcie w przycisk pauzy na ekranie
+- **Pauza rozgrywki:** 
+    - przcisk 'P' na klawiaturze
+    - Kliknięcie w ikone pauzy na ekranie
 
 - **Wyjście z gry:**:
     - W trakcie rozgrywki należy kliknąć przycik ESC
