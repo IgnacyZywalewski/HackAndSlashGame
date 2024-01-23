@@ -1,1 +1,3 @@
 # ProjektC++
+
+## O projekcie
