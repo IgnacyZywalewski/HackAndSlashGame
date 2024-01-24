@@ -11,13 +11,13 @@ Gra oferuje:
 
 ## Wymagania Systemowe i potrzebne biblioteki
 Przed uruchomieniem projektu, upewnij się, że spełniasz następujące wymagania:
-- System operacyjny: Windows 10 11
+- System operacyjny: Windows 10 lub 11
+- Program Microsoft Visual 2022 z zainstalowanym językiem C++ 
 - Biblioteki:
     - SDL2
     - SDL2_ttf
     - SDL2_image
-
-Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do edycji kodu i kompilacji projektu, a sposób ich instalacji jest opisany poniżej
+Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do edycji kodu i kompilacji projektu, a sposób ich instalacji jest opisany poniżej.
 
 
 ## Jak Zainstalować:
@@ -28,9 +28,20 @@ Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do
    - po skończonej instalacji uruchom skrót znajdujący się na pulpicie lub plik .exe w miejscu instalacji gry
 
 **Rozgrywka, edycja i kompilacja gry:**
+   - w programie Microsoft Visual sklonuj repozytorium lub utwórz nowy projekt i skopiuj wszystkie pliki źródłowe i assety 
    - pobierz biblioteki opisane powyżej z repozytorium
-   - sposób instalacji bibliotek:
-       - 
+   - sposób instalacji biblioteki SDL2:
+      - w programie Microsoft Visual klknij w zakładkę Projekt i wybierz właściwości
+      - wybierz zakładkę Katalogi VC++:
+         - w opcji Katalogi plików nagłówkowych dodaj ścieżkę do folderu SDL2\include (ścieżka może się róznić w zależności gdzie znajduje się folder z biblioteką)
+         - w opcji Katalogi biblotek dodaj ścieżkę do folderu SDL2\lib\x64
+      - te same kroki wykonaj dla biblioteki SDL2_image i SDL2_ttf (upewnij się że podajesz odpowiednie ścieżki do każdego z folderów)
+      - wybierz zakładkę Konsolidator -> Dane wejściowe :
+         - w opcji Dodatkowe zależności wpisz ręcznie lub skopiuj: 'SDL2.lib; SDL2main.lib; SDL2_image.lib; SDL2_ttf.lib;'
+      - wciśnij przycisk ok
+      - upewnij się że w folderze, w którym znajdują się pliki źródłowe znajdują się pliki: SDL2.dll, SDL2_image.dll i SDL2_ttf.dll
+      - po zainstalowanu bibliotek nie zmieniaj ich położenia, a jeśli to zrobisz pamiętaj o zmianie ich ścieżek we właściwościach projektu
+   - skompiluj i uruchom projekt
 
 
 ## Sterowanie

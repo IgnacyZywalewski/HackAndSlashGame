@@ -32,6 +32,10 @@ Render::Render(SDL_Renderer* renderer, int screenWidth, int screenHeight)
 }
 
 Render::~Render() {
+    SDL_DestroyTexture(screenTexture);
+    SDL_DestroyTexture(buttonTexture);
+    SDL_DestroyTexture(gameScreenTexture);
+    SDL_DestroyTexture(frameTexture);
     TTF_CloseFont(font);
     TTF_Quit();
 }

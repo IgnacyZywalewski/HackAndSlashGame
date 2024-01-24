@@ -419,6 +419,7 @@ void Game::handleEvents() {
         switch (event.type) {
         case SDL_QUIT:
             gameState = GameState::EXIT;
+            quitGame = true;
             break;
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym) {
