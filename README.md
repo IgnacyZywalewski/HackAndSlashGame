@@ -2,6 +2,7 @@
 
 ## Opis Projektu
 Jest to prosta gra 2D typu hack and slash stworzona w stylu pixel art. Gracz ma do dyspozycji postać, którą może poruszać się po ekranie. W trakcie rozgrywki tworzą się wrogowie, którzy zmierzają w kierunku gracza, a po wejściu z nim w kontakt zadają mu obrażenia. Gracz ma do dyspozycji broń, która zadaje obrażenia przeciwnikom. Po pokonaniu przeciwnika gracz otrzymuje punkty. Wraz ze wzrostem wyniku przeciwnicy tworzą się coraz szybciej. Celem rozgrywki jest przetrwanie jak najdłużej ilości czasu i zdobycie jak największego wyniku. 
+
 Gra oferuje:
    - 2 klasy postaci do wyboru
    - 2 rodzje broni
@@ -17,6 +18,7 @@ Przed uruchomieniem projektu, upewnij się, że spełniasz następujące wymagan
     - SDL2
     - SDL2_ttf
     - SDL2_image
+
 Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do edycji kodu i kompilacji projektu, a sposób ich instalacji jest opisany poniżej.
 
 
