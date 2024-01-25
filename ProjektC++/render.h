@@ -23,7 +23,7 @@ public:
 private:
     SDL_Renderer* renderer;
     SDL_Color textColor;
-    TTF_Font* font;
+    TTF_Font* font = nullptr;
 
     SDL_Texture* screenTexture = nullptr;
     SDL_Texture* buttonTexture = nullptr;

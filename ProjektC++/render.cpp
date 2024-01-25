@@ -13,6 +13,7 @@ Render::Render(SDL_Renderer* renderer, int screenWidth, int screenHeight)
     font = TTF_OpenFont("assets/HeadlinerNo45.ttf", 36);
     textColor = { 36, 36, 36 };
 
+
     SDL_Surface* tmpScreenSurface = IMG_Load("assets/start_screen.png");
     screenTexture = SDL_CreateTextureFromSurface(renderer, tmpScreenSurface);
     SDL_FreeSurface(tmpScreenSurface);
@@ -130,7 +131,7 @@ void Render::renderStartScreen() {
 void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Texture* wizardTexture) {
     SDL_RenderClear(renderer);
 
-    //tekstura t³a
+    //t³o
     SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 
     //napis na górze
@@ -177,6 +178,8 @@ void Render::renderCharacterSelectionScreen(SDL_Texture* warriorTexture, SDL_Tex
     //zwolnienie pamiêci
     SDL_FreeSurface(surfaceMessage);
     SDL_DestroyTexture(topTextTexture);
+    SDL_DestroyTexture(warriorTextTexture);
+    SDL_DestroyTexture(wizardTextTexture);
 
     SDL_RenderPresent(renderer);
 }

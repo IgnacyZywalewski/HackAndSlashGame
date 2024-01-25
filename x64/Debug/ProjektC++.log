@@ -1,0 +1,5 @@
+﻿  game.cpp
+C:\Studia\3\ProjektC++\ProjektC++\ProjektC++\enemy.h(29,20): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Studia\3\ProjektC++\ProjektC++\ProjektC++\game.cpp(77,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Studia\3\ProjektC++\ProjektC++\ProjektC++\game.cpp(78,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+  ProjektC++.vcxproj -> C:\Studia\3\ProjektC++\ProjektC++\x64\Debug\ProjektC++.exe

@@ -13,6 +13,8 @@
 #include "render.h"
 #include "powerUp.h"
 
+
+
 float playerWidth = 50;
 float playerHeight = 50;
 static int timeBetweenBats = 1250;
