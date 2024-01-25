@@ -1,24 +1,2 @@
-﻿  game.cpp
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(276,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(277,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(299,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(300,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(467,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(468,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(480,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(481,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(493,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(494,23): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Studia\3\ProjektC++\ProjektC++\game.cpp(606,41): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244: "argument": konwersja z "_Ty" do "float", możliwa utrata danych
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:         with
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:         [
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:             _Ty=int
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56): warning C4244:         ]
-  (kompilowanie pliku źródłowego „game.cpp”)
-  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\memory(3465,56):
-  kontekst tworzenia wystąpienia szablonu (najpierw najstarszy) to
-  	C:\Studia\3\ProjektC++\ProjektC++\game.cpp(279,46):
-  	zobacz odwołanie do kompilowanego tworzenia wystąpienia „std::unique_ptr<Bat,std::default_delete<Bat>> std::make_unique<Bat,SDL_Renderer*&,float&,float&,int,int,0>(SDL_Renderer *&,float &,float &,int &&,int &&)” funkcji szablon
-  
+﻿  LINK : nie znaleziono elementu C:\Studia\3\ProjektC++\x64\Debug\ProjektC++.exe ani nie został on skompilowany podczas ostatniego konsolidowania przyrostowego; zostanie wykonana pełna konsolidacja
   ProjektC++.vcxproj -> C:\Studia\3\ProjektC++\x64\Debug\ProjektC++.exe

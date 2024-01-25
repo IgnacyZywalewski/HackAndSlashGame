@@ -26,8 +26,8 @@ Biblioteki SDL2, które zostały użyte do tworzenia programu znajdują się w r
    - po skończonej instalacji uruchom skrót znajdujący się na pulpicie lub plik .exe w miejscu instalacji gry
 
 **Rozgrywka, edycja i kompilacja gry:**
-   - Sposób 1 - w teminalu wpisz komende: ```"git clone --depth 1 https://github.com/IgnacyZywalewski/ProjektCpp"```. Następnie otwórz projekt w programie Microsoft Visual
-   - Sposób 2 - w programie Microsoft Visual sklonuj repozytorium. Program powinien być gotowy do urochomienia. Jeśli z jakiegoś powodu istnieje problem z bibliotekami oto instrukcja ich instalacji:
+   - Sposób 1 - w teminalu wpisz komendę: ```"git clone --depth 1 https://github.com/IgnacyZywalewski/ProjektCpp"```. Następnie otwórz projekt w programie Microsoft Visual
+   - Sposób 2 - w programie Microsoft Visual sklonuj repozytorium. Program powinien być gotowy do uruchomienia. Jeśli z jakiegoś powodu istnieje problem z bibliotekami oto instrukcja ich instalacji:
       - w programie Microsoft Visual klknij w zakładkę Projekt i wybierz właściwości
       - wybierz zakładkę Katalogi VC++:
          - w opcji Katalogi plików nagłówkowych dodaj ścieżkę do folderu SDL2\include (ścieżka może się róznić w zależności gdzie znajduje się folder z biblioteką)
