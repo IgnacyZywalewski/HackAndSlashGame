@@ -14,12 +14,8 @@ Gra oferuje:
 Przed uruchomieniem projektu, upewnij się, że spełniasz następujące wymagania:
 - System operacyjny: Windows 10 lub 11
 - Program Microsoft Visual 2022 z zainstalowanym językiem C++ 
-- Biblioteki:
-    - SDL2
-    - SDL2_ttf
-    - SDL2_image
 
-Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do edycji kodu i kompilacji projektu, a sposób ich instalacji jest opisany poniżej.
+Biblioteki SDL2, które zostały użyte do tworzenia programu znajdują się w repozytorium i zostały podłączone do projektu dynamicznie 
 
 
 ## Jak Zainstalować:
@@ -30,9 +26,8 @@ Biblioteki znajdują się w repozytorium, ich instalacja potrzebna jest tylko do
    - po skończonej instalacji uruchom skrót znajdujący się na pulpicie lub plik .exe w miejscu instalacji gry
 
 **Rozgrywka, edycja i kompilacja gry:**
-   - w programie Microsoft Visual sklonuj repozytorium lub utwórz nowy projekt i skopiuj wszystkie pliki źródłowe i assety 
-   - pobierz biblioteki opisane powyżej z repozytorium
-   - sposób instalacji biblioteki SDL2:
+   - Sposób 1 - w teminalu wpisz komende: ```"git clone --depth 1 https://github.com/IgnacyZywalewski/ProjektCpp"```. Następnie otwórz projekt w programie Microsoft Visual
+   - Sposób 2 - w programie Microsoft Visual sklonuj repozytorium. Program powinien być gotowy do urochomienia. Jeśli z jakiegoś powodu istnieje problem z bibliotekami oto instrukcja ich instalacji:
       - w programie Microsoft Visual klknij w zakładkę Projekt i wybierz właściwości
       - wybierz zakładkę Katalogi VC++:
          - w opcji Katalogi plików nagłówkowych dodaj ścieżkę do folderu SDL2\include (ścieżka może się róznić w zależności gdzie znajduje się folder z biblioteką)
