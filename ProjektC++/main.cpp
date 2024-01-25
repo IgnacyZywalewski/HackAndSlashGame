@@ -1,5 +1,4 @@
 #include "game.h"
-
 #include <ctime>
 
 int main(int argc, char* argv[]) {
